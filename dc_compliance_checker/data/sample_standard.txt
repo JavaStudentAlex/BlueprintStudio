@@ -1,0 +1,29 @@
+TIA-942 Data Center Infrastructure Standard — Spatial, Topological & Energy Requirements
+=========================================================================================
+(Expressed against the ArchDraft x FlowDraft unified-graph vocabulary:
+ space categories = data_hall / electrical_room / plant_room / office / corridor;
+ equipment node types = crac / crah / ups / pdu / chiller / rack.)
+
+5.1 Aisles (Hot/Cold Aisle Containment)
+Cold aisles shall be at least 1.2 m wide to permit front-of-rack access and
+airflow. Hot aisles shall be at least 0.9 m wide for rear service access.
+
+5.2 Data Hall (Computer Room)
+Each data_hall shall have a usable area of at least 20 m2.
+
+5.3 Electrical Room
+At least one electrical_room must exist to house power distribution equipment.
+
+5.4 Cooling Equipment
+At least one CRAC (computer room air conditioner) unit must exist to provide
+cooling to the data hall.
+
+5.5 Uninterruptible Power Supply
+At least one UPS must exist to provide ride-through power.
+
+5.6 Power Topology
+Every data_hall must connect to an electrical_room through the electrical
+distribution topology (power cabling / busway).
+
+5.7 Energy Efficiency
+The facility Power Usage Effectiveness (PUE) shall not exceed 1.5.

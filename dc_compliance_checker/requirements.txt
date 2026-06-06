@@ -1,0 +1,20 @@
+# Core stack for the Data Center Compliance Checker (TIA-942)
+
+# --- Database / ORM ---
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.0      # PostgreSQL driver
+
+# --- Rule extraction (local LLM + structured output) ---
+ollama>=0.3.0              # Python client for a local Ollama server (mistral)
+pdfplumber>=0.11.0         # Page-accurate PDF text extraction + chunking
+pydantic>=2.5.0
+
+# --- Geometry parsing & math ---
+ezdxf>=1.1.0               # Read AutoCAD DXF files
+shapely>=2.0.0            # Polygons, areas, distances
+
+# --- Topology / graphs ---
+networkx>=3.0
+
+# --- Environment management ---
+python-dotenv>=1.0.0
