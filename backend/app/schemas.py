@@ -433,6 +433,48 @@ class FuseResponse(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class StandardReviewState(StrEnum):
+    PENDING = "pending"
+    REVIEWED = "reviewed"
+    REJECTED = "rejected"
+    DEPRECATED = "deprecated"
+
+
+class StandardRetrievalMethod(StrEnum):
+    MANUAL_PDF = "manual_pdf"
+    API_PULL = "api_pull"
+    STATIC_SCRAPE = "static_scrape"
+    DYNAMIC_SCRAPE = "dynamic_scrape"
+
+
+class StandardLicenseStatus(StrEnum):
+    OPEN_ACCESS = "open_access"
+    PAYWALL = "paywall"
+    INTERNAL_ONLY = "internal_only"
+
+
+class StandardProvenance(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    source_name: str
+    last_retrieved_at: str | None = None
+    hash_or_version: str | None = None
+    retriever_agent: str | None = None
+
+
+class StandardSourceCatalogEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    source_id: str
+    title: str
+    official_url: str | None = None
+    jurisdiction: str
+    discipline: Discipline
+    language: str
+    license_status: StandardLicenseStatus
+    retrieval_method: StandardRetrievalMethod
+    review_state: StandardReviewState
+    provenance: StandardProvenance | None = None
+
+
 class ComplianceTargetClass(StrEnum):
     ROOM = "Room"
     AISLE = "Aisle"

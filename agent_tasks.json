@@ -304,7 +304,7 @@
     },
     {
       "id": "standards-source-catalog",
-      "status": "todo",
+      "status": "done",
       "area": "standards",
       "risk": "medium",
       "title": "Create standards source catalog",
