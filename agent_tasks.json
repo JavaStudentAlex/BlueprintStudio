@@ -155,7 +155,7 @@
     },
     {
       "id": "graph-artifact-persistence-design",
-      "status": "todo",
+      "status": "done",
       "area": "database",
       "risk": "medium",
       "title": "Design graph artifact persistence before database migration",
