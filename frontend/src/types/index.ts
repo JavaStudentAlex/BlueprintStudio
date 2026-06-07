@@ -282,3 +282,13 @@ export type EngineeringGraph = {
   edges: GraphEdge[];
   annotations: GraphAnnotation[];
 };
+
+export type FuseRequest = {
+  architecture: EngineeringGraph;
+  mep: EngineeringGraph;
+};
+
+export type FuseResponse = {
+  fused_graph: EngineeringGraph;
+  warnings: string[];
+};

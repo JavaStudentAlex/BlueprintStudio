@@ -420,3 +420,13 @@ class EngineeringGraph(BaseModel):
     nodes: list[GraphNode] = Field(default_factory=list)
     edges: list[GraphEdge] = Field(default_factory=list)
     annotations: list[GraphAnnotation] = Field(default_factory=list)
+
+
+class FuseRequest(BaseModel):
+    architecture: EngineeringGraph
+    mep: EngineeringGraph
+
+
+class FuseResponse(BaseModel):
+    fused_graph: EngineeringGraph
+    warnings: list[str] = Field(default_factory=list)

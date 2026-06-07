@@ -10,6 +10,8 @@ import type {
   ReportSessionLaunchResponse,
   ThreadHistory,
   ThreadInfo,
+  FuseRequest,
+  FuseResponse,
 } from "@/types";
 
 const RAW_BACKEND_URL =
@@ -79,6 +81,16 @@ export async function ingestFiles(files: File[]): Promise<{
   for (const f of files) form.append("files", f, f.name);
   return jsonOrThrow(
     await fetch(url("/api/ingest"), { method: "POST", body: form }),
+  );
+}
+
+export async function fuseGraphs(req: FuseRequest): Promise<FuseResponse> {
+  return jsonOrThrow<FuseResponse>(
+    await fetch(url("/api/fusion"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req),
+    }),
   );
 }
 
