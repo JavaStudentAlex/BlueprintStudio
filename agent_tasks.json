@@ -133,7 +133,7 @@
     },
     {
       "id": "graph-validation-service",
-      "status": "todo",
+      "status": "done",
       "area": "graph",
       "risk": "medium",
       "title": "Add backend graph validation service",
