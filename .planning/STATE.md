@@ -34,7 +34,7 @@ should be selected from `.planning/todos/AGENT-TASKS.md`.
 
 Following the GSD task queue, the first safe pending task is:
 
-- `flowdraft-golden-demo-frontend` - Add frontend golden demo workflow.
+- `flowdraft-demo-e2e-smoke` - Add offline golden demo smoke test.
 
 If the user wants strict GSD phase execution instead of manifest-order task
 selection, run:

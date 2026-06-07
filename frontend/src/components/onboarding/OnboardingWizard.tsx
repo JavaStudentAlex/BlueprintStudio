@@ -120,13 +120,26 @@ function Step1() {
         <div className="text-xs text-brand-subtle">
           or click to choose a bob-file · max. 4 GB
         </div>
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          className="mt-3 rounded-lg bg-brand-blue px-4 py-1.5 text-xs font-medium text-white shadow hover:bg-brand-navy"
-        >
-          Choose bob-file
-        </button>
+        <div className="mt-3 flex gap-2">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              useChatStore.getState().loadDemo();
+            }}
+            data-testid="button-load-demo"
+            className="rounded-lg border border-brand-line bg-white px-4 py-1.5 text-xs font-medium text-brand-ink shadow hover:bg-brand-surface-soft"
+          >
+            Load demo
+          </button>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="rounded-lg bg-brand-blue px-4 py-1.5 text-xs font-medium text-white shadow hover:bg-brand-navy"
+          >
+            Choose bob-file
+          </button>
+        </div>
       </label>
     </motion.div>
   );

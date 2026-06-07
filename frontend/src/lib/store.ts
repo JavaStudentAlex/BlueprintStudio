@@ -50,7 +50,7 @@ type State = {
   messages: Message[];
   threadId: string | null;
   activeReportId: string | null;
-  activeView: "graph" | "report";
+  activeView: "graph" | "report" | "rooms" | "valuation" | "compliance";
   reportStatus: ReportSessionStatus | null;
   reportCards: ReportCardPayload[];
   currentGate: ReportGatePayload | null;
@@ -96,7 +96,7 @@ type Actions = {
   // Original
   reset: () => void;
   setThreadId: (id: string | null) => void;
-  setActiveView: (view: "graph" | "report") => void;
+  setActiveView: (view: "graph" | "report" | "rooms" | "valuation" | "compliance") => void;
   hydrateThreadIdFromStorage: () => void;
   clearThread: () => void;
   launchReport: () => Promise<ReportSessionLaunchResponse>;
@@ -117,6 +117,7 @@ type Actions = {
   setProjectEmails: (emails: string[]) => void;
   setConversationsZip: (name: string) => void;
   advanceOnboarding: (next: OnboardingStep) => void;
+  loadDemo: () => void;
   setLoadingProgress: (p: number) => void;
 
   // Files
@@ -662,6 +663,7 @@ export const useChatStore = create<State & Actions>((set, get) => {
   setProjectEmails: (emails) => set({ projectEmails: emails }),
   setConversationsZip: (name) => set({ conversationsZipName: name }),
   advanceOnboarding: (next) => set({ onboardingStep: next }),
+  loadDemo: () => set({ onboardingStep: "ready", activeView: "rooms" }),
   setLoadingProgress: (p) => set({ loadingProgress: p }),
 
   // Files ------------------------------------------------------------------
