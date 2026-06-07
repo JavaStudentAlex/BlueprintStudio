@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 Role = Literal["user", "assistant", "system", "tool"]
 ChunkType = Literal[
@@ -286,6 +286,7 @@ Discipline = Literal["architecture", "electrical", "plumbing", "hvac", "ventilat
 
 
 class GraphProvenance(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     source_file: str | None = None
     page_number: int | None = None
     parser_engine: str | None = None
@@ -293,6 +294,7 @@ class GraphProvenance(BaseModel):
 
 
 class GraphMeta(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     diagram_id: str | None = None
     diagram_type: str | None = None
     building_id: str | None = None
@@ -307,6 +309,7 @@ class GraphMeta(BaseModel):
 
 
 class GraphSpace(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     space_id: str
     discipline: Discipline = "architecture"
     category: str | None = None
@@ -323,6 +326,7 @@ class GraphSpace(BaseModel):
 
 
 class GraphWall(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     wall_id: str
     discipline: Discipline = "architecture"
     polyline: list[list[float]] | None = None
@@ -336,6 +340,7 @@ class GraphWall(BaseModel):
 
 
 class GraphFixture(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     fixture_id: str
     discipline: Discipline = "architecture"
     category: str | None = None
@@ -351,6 +356,7 @@ class GraphFixture(BaseModel):
 
 
 class GraphNode(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     node_id: str
     discipline: Discipline = "general"
     category: str | None = None
@@ -366,6 +372,7 @@ class GraphNode(BaseModel):
 
 
 class GraphEdge(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     edge_id: str
     discipline: Discipline = "general"
     category: str | None = None
@@ -382,6 +389,7 @@ class GraphEdge(BaseModel):
 
 
 class GraphAnnotation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     annotation_id: str
     discipline: Discipline = "general"
     text: str
@@ -395,7 +403,16 @@ class GraphAnnotation(BaseModel):
         return _coerce_json_object(value)
 
 
+class GraphValidationError(BaseModel):
+    path: str
+    code: str
+    message: str
+    severity: Literal["error", "warning"] = "error"
+
+
 class EngineeringGraph(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     meta: GraphMeta = Field(default_factory=GraphMeta)
     spaces: list[GraphSpace] = Field(default_factory=list)
     walls: list[GraphWall] = Field(default_factory=list)
