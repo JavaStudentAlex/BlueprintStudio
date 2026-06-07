@@ -124,8 +124,7 @@ def test_public_ingest_report_export_path_downloads_ready_pdf(
         for query in aufgabenstellung["queries"]
     )
     assert any(
-        query["query"]
-        == "Texte Unterlagen Unsicherheiten, Widersprueche und fehlende Nachweise"
+        query["query"] == "Texte Unterlagen Unsicherheiten, Widersprueche und fehlende Nachweise"
         and query["memory_ids"] == [memory_id]
         for query in unsicherheiten["queries"]
     )
@@ -134,9 +133,7 @@ def test_public_ingest_report_export_path_downloads_ready_pdf(
         artifact for artifact in body["artifacts"] if artifact["kind"] == "paragraph_citations"
     ]
     cited_paragraphs = [
-        artifact
-        for artifact in paragraph_artifacts
-        if artifact["content"]["evidence_manifest"]
+        artifact for artifact in paragraph_artifacts if artifact["content"]["evidence_manifest"]
     ]
     assert {artifact["content"]["section_id"] for artifact in cited_paragraphs} == {
         "aufgabenstellung",
@@ -149,7 +146,8 @@ def test_public_ingest_report_export_path_downloads_ready_pdf(
 
     findings = body["validation_findings"]
     assert findings
-    # We might have warnings for missing mandatory sections like 'kurzcharakteristik' or 'empfehlungen'
+    # We might have warnings for missing mandatory sections such as
+    # 'kurzcharakteristik' or 'empfehlungen'.
     # but we definitely expect the info finding for appendix consistency.
     assert any(finding["code"] == "appendix_source_inventory_consistent" for finding in findings)
     assert all(finding["severity"] in ["info", "warning"] for finding in findings)
@@ -169,7 +167,10 @@ def test_public_ingest_report_export_path_downloads_ready_pdf(
     assert validation_log["payload"]["finding_counts"]["total"] >= 1
     assert validation_log["payload"]["finding_counts"]["info"] >= 1
     assert validation_log["payload"]["finding_counts"]["blocker"] == 0
-    assert "appendix_source_inventory_consistent" in validation_log["payload"]["finding_counts"]["codes"]
+    assert (
+        "appendix_source_inventory_consistent"
+        in validation_log["payload"]["finding_counts"]["codes"]
+    )
 
     assert len(body["exports"]) == 1
     export = body["exports"][0]
@@ -199,9 +200,7 @@ def test_public_ingest_report_export_path_downloads_ready_pdf(
     assert export_log["payload"]["output_filename"] == export_path.name
     assert "output_path" not in export_log["payload"]
 
-    download = client.get(
-        f"/api/reports/{session_id}/exports/{export['export_id']}/download"
-    )
+    download = client.get(f"/api/reports/{session_id}/exports/{export['export_id']}/download")
     assert download.status_code == 200, download.text
     assert download.headers["content-type"] == "application/pdf"
     assert download.content.startswith(b"%PDF")

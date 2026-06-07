@@ -464,11 +464,7 @@ class ReportPipeline:
 
             artifacts = self._store.list_artifacts(normalized_session_id)
             section_plan_artifact = next(
-                (
-                    artifact
-                    for artifact in reversed(artifacts)
-                    if artifact.kind == "section_plan"
-                ),
+                (artifact for artifact in reversed(artifacts) if artifact.kind == "section_plan"),
                 None,
             )
             if section_plan_artifact is None:
@@ -528,9 +524,7 @@ class ReportPipeline:
 
             self._store.complete_stage(
                 retrieval_stage.stage_id,
-                summary=(
-                    f"Retrieved evidence for {len(retrieval_sections_summary)} sections"
-                ),
+                summary=(f"Retrieved evidence for {len(retrieval_sections_summary)} sections"),
             )
             self._append_log(
                 normalized_session_id,
@@ -675,9 +669,7 @@ class ReportPipeline:
                 self._append_log(
                     normalized_session_id,
                     level="info",
-                    message=(
-                        f"Section {section_id} drafted with {len(paragraphs)} paragraphs"
-                    ),
+                    message=(f"Section {section_id} drafted with {len(paragraphs)} paragraphs"),
                     stage_id=draft_stage.stage_id,
                     payload={
                         "section_id": section_id,
@@ -695,9 +687,7 @@ class ReportPipeline:
 
             self._store.complete_stage(
                 draft_stage.stage_id,
-                summary=(
-                    f"Drafted evidence for {len(drafted_sections_summary)} sections"
-                ),
+                summary=(f"Drafted evidence for {len(drafted_sections_summary)} sections"),
             )
             self._append_log(
                 normalized_session_id,

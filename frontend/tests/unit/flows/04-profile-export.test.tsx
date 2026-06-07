@@ -16,9 +16,7 @@ describe("Top-right profile button + export PDF", () => {
     await user.click(screen.getByTestId("button-profile"));
 
     expect(screen.getByTestId("profile-panel")).toBeInTheDocument();
-    const exportBtn = screen.getByRole("button", {
-      name: /bob-report|export.*pdf/i,
-    });
+    const exportBtn = screen.getByRole("button", { name: /export.*pdf/i });
     expect(exportBtn).toBeInTheDocument();
     await user.click(exportBtn);
   });

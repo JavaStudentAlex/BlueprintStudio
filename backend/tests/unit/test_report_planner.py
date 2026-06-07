@@ -67,9 +67,9 @@ class TestBuildSourceInventory:
         assert [entry["document_id"] for entry in inventory["by_family"]["cad_exports"]] == [
             "doc-dwg",
         ]
-        assert [
-            entry["document_id"] for entry in inventory["by_family"]["engineering_images"]
-        ] == ["doc-png"]
+        assert [entry["document_id"] for entry in inventory["by_family"]["engineering_images"]] == [
+            "doc-png"
+        ]
         assert [entry["document_id"] for entry in inventory["by_status"]["indexed"]] == [
             "doc-pdf",
             "doc-docx",

@@ -646,15 +646,12 @@ class TestReportExportDownload:
             output_path=str(pdf_path),
         )
 
-        unknown_session = client.get(
-            "/api/reports/missing-session/exports/missing-export/download"
-        )
+        unknown_session = client.get("/api/reports/missing-session/exports/missing-export/download")
         unknown_export = client.get(
             f"/api/reports/{first_session.session_id}/exports/missing-export/download"
         )
         mismatched_export = client.get(
-            f"/api/reports/{first_session.session_id}/exports/"
-            f"{second_export.export_id}/download"
+            f"/api/reports/{first_session.session_id}/exports/{second_export.export_id}/download"
         )
 
         assert unknown_session.status_code == 404
@@ -707,8 +704,7 @@ class TestReportExportDownload:
             f"/api/reports/{session.session_id}/exports/{no_path_export.export_id}/download"
         )
         missing_file = client.get(
-            f"/api/reports/{session.session_id}/exports/"
-            f"{missing_file_export.export_id}/download"
+            f"/api/reports/{session.session_id}/exports/{missing_file_export.export_id}/download"
         )
         escaping = client.get(
             f"/api/reports/{session.session_id}/exports/{escaping_export.export_id}/download"

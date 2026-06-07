@@ -90,8 +90,7 @@ async def get_report_session(session_id: str, request: Request) -> ReportSession
         raise HTTPException(status_code=404, detail="report session not found")
 
     stages = [
-        _to_model(ReportStage, stage)
-        for stage in state.report_sessions.list_stages(session_id)
+        _to_model(ReportStage, stage) for stage in state.report_sessions.list_stages(session_id)
     ]
     gates = [_to_model(ReportGate, gate) for gate in state.report_sessions.list_gates(session_id)]
     artifacts = [
@@ -105,9 +104,7 @@ async def get_report_session(session_id: str, request: Request) -> ReportSession
     exports = [
         _to_model(ReportExport, export) for export in state.report_sessions.list_exports(session_id)
     ]
-    recent_logs = [
-        _to_model(ReportLog, log) for log in state.report_sessions.list_logs(session_id)
-    ]
+    recent_logs = [_to_model(ReportLog, log) for log in state.report_sessions.list_logs(session_id)]
     return ReportSessionInspectionResponse(
         session=_to_model(ReportSession, session),
         current_stage=session.current_stage,

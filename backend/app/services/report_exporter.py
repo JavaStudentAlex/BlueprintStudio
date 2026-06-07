@@ -369,8 +369,7 @@ def _paragraph_with_citations(paragraph: Any, citation_registry: _CitationRegist
     if not text:
         text = "Kein Absatztext verfügbar."
     markers = [
-        f"[{citation_registry.marker_for(evidence)}]"
-        for evidence in _paragraph_evidence(paragraph)
+        f"[{citation_registry.marker_for(evidence)}]" for evidence in _paragraph_evidence(paragraph)
     ]
     if markers:
         text = f"{text} {' '.join(markers)}"

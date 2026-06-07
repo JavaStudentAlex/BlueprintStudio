@@ -157,7 +157,7 @@ export function ChatPanel() {
               Ask me about your bob-project
             </div>
             <div className="mt-1">
-              e.g. "Which bob-files relate to the bob-foundation?"
+              e.g. &quot;Which bob-files relate to the bob-foundation?&quot;
             </div>
           </div>
         ) : (

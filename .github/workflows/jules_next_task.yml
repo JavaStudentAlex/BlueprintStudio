@@ -1,0 +1,95 @@
+name: 2. Trigger Next Jules Task
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  next-task:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge'))) }}
+
+    steps:
+      - name: Trigger Google Jules via official API
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          JULES_1_API_KEY: ${{ secrets.JULES_1_API_KEY }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          if [ -z "$JULES_API_KEY" ] && [ -z "$JULES_1_API_KEY" ]; then
+            echo "At least one Jules API key secret is required: JULES_API_KEY or JULES_1_API_KEY."
+            exit 1
+          fi
+
+          PROMPT=$(cat <<'EOF'
+          You are working on BlueprintStudio, a construction-analysis application with a FastAPI/LangGraph backend and a Next.js frontend.
+
+          TASK:
+          1. Read README.md, Makefile, backend/pyproject.toml, frontend/package.json, and the existing source/tests before changing code.
+          2. Pick one focused, high-value improvement from failing tests, TODOs, clear bugs, or small architecture gaps.
+          3. Implement the complete change in one PR, including backend and/or frontend tests when behavior changes.
+          4. Keep the change tightly scoped. Do not refactor unrelated code.
+          5. Do not modify .github/workflows/**, secrets, deployment files, or dependency manifests unless the selected task explicitly requires it.
+          6. Before opening the PR, run the relevant checks:
+             - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
+             - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
+          7. If both backend and frontend are touched, run both check groups.
+          8. Never call real external LLM or third-party APIs from tests; use mocks or fakes.
+          9. Open one pull request against main with a concise summary and the checks you ran.
+          EOF
+          )
+
+          PAYLOAD=$(jq -n \
+            --arg prompt "$PROMPT" \
+            --arg source "sources/github/${REPOSITORY}" \
+            '{
+              "prompt": $prompt,
+              "sourceContext": {
+                "source": $source,
+                "githubRepoContext": {"startingBranch": "main"}
+              },
+              "automationMode": "AUTO_CREATE_PR",
+              "title": "BlueprintStudio Improvement"
+            }')
+
+          trigger_jules() {
+            local key_name="$1"
+            local api_key="$2"
+
+            if [ -z "$api_key" ]; then
+              echo "Skipping ${key_name}; secret is not configured."
+              return 2
+            fi
+
+            echo "Triggering Jules with ${key_name}."
+            curl --fail --silent --show-error 'https://jules.googleapis.com/v1alpha/sessions' \
+              -X POST \
+              -H "Content-Type: application/json" \
+              -H "X-Goog-Api-Key: ${api_key}" \
+              -d "$PAYLOAD"
+          }
+
+          if [ $((RUN_NUMBER % 2)) -eq 0 ]; then
+            PRIMARY_NAME="JULES_API_KEY"
+            PRIMARY_KEY="$JULES_API_KEY"
+            FALLBACK_NAME="JULES_1_API_KEY"
+            FALLBACK_KEY="$JULES_1_API_KEY"
+          else
+            PRIMARY_NAME="JULES_1_API_KEY"
+            PRIMARY_KEY="$JULES_1_API_KEY"
+            FALLBACK_NAME="JULES_API_KEY"
+            FALLBACK_KEY="$JULES_API_KEY"
+          fi
+
+          if trigger_jules "$PRIMARY_NAME" "$PRIMARY_KEY"; then
+            exit 0
+          fi
+
+          echo "Primary Jules key path failed; retrying once with ${FALLBACK_NAME}."
+          trigger_jules "$FALLBACK_NAME" "$FALLBACK_KEY"

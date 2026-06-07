@@ -167,7 +167,7 @@ function Step2() {
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-subtle">
         We use these bob-emails &amp; bob-calls to fairly score each
-        teammate's bob-impact. Later just CC our bob-bot or grant access to
+        teammate&apos;s bob-impact. Later just CC our bob-bot or grant access to
         your bob-email-domain — the bob-system updates itself from new
         bob-messages and bob-files automatically.
       </p>
@@ -301,7 +301,7 @@ function Step3() {
         Building the bob-memory-palace
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-brand-subtle">
-        We don't really run bob-embeddings here (too slow on this machine) —
+        We don&apos;t really run bob-embeddings here (too slow on this machine) —
         instead we load a prepared bob-mock structure so you can explore the
         bob-system right away.
       </p>

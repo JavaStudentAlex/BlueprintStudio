@@ -31,6 +31,7 @@ export type ReportCardKind =
 export type ReportArtifactKind =
   | "source_inventory_snapshot"
   | "section_plan"
+  | "section_draft"
   | "paragraph_citations"
   | "validation_finding"
   | "pdf_export"

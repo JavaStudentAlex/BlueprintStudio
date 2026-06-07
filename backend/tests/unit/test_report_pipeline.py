@@ -79,9 +79,7 @@ def _seed_report_documents(registry) -> None:
         document_id="doc-failed",
         original_filename="calc.xlsx",
         stored_path="/app/data/documents/doc-failed.xlsx",
-        content_type=(
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ),
+        content_type=("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
         byte_size=456,
         uploaded_at="2026-05-01T11:00:00+00:00",
     )
@@ -530,9 +528,7 @@ class TestReportPipeline:
             assert pdf_artifact.content["status"] == "ready"
             assert pdf_artifact.content["diagnostics"]["output_filename"].endswith("-report.pdf")
             report_card_stage_names = [
-                chunk.payload.get("stage_name")
-                for chunk in chunks
-                if chunk.type == "report_card"
+                chunk.payload.get("stage_name") for chunk in chunks if chunk.type == "report_card"
             ]
             assert report_card_stage_names[-2:] == [
                 EXPORT_REPORT_STAGE_NAME,
@@ -841,6 +837,7 @@ class TestReportPipeline:
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         async with _pipeline_context() as (store, _document_registry, pipeline):
+
             def boom(*args, **kwargs):
                 raise RuntimeError("boom")
 

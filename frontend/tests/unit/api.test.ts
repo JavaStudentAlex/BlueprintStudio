@@ -16,6 +16,7 @@ import {
   streamChat,
   streamReportSession,
 } from "@/lib/api";
+import type { ReportCardPayload, ReportGatePayload } from "@/types";
 
 const BACKEND = "http://localhost:8000";
 
@@ -243,8 +244,8 @@ describe("REST API client", () => {
       ),
     );
 
-    const cards: typeof reportCard[] = [];
-    const gates: typeof reportGate[] = [];
+    const cards: ReportCardPayload[] = [];
+    const gates: ReportGatePayload[] = [];
     let done = false;
 
     await streamReportSession("report-123", {

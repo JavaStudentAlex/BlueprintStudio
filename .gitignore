@@ -57,17 +57,23 @@ Thumbs.db
 secrets/
 .omx/
 
-# Local agent documentation overlays
-AGENTS.md
-CLAUDE.md
-.github/instructions/*.instructions.md
-.github/skills/*/SKILL.md
-.agents/skills/*/SKILL.md
+# Local-only agent/runtime files
 .claude/skills/*/SKILL.md
 backend/uv.lock
 .mcp.json
 .gsd
-.github
+.github/*
+!.github/PULL_REQUEST_TEMPLATE.md
+!.github/workflows/
+!.github/workflows/*.yml
+!.github/workflows/*.yaml
+!.github/agents/
+!.github/agents/*.agent.md
+!.github/instructions/
+!.github/instructions/*.instructions.md
+!.github/skills/
+!.github/skills/*/
+!.github/skills/*/SKILL.md
 .gsd-id
 .bg-shell/
 *~
