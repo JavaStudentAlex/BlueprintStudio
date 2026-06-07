@@ -365,7 +365,7 @@
     },
     {
       "id": "hybrid-graph-text-retriever",
-      "status": "todo",
+      "status": "done",
       "area": "rag",
       "risk": "medium",
       "title": "Add hybrid graph and text retriever interface",
