@@ -176,7 +176,7 @@
     },
     {
       "id": "graph-database-decision-record",
-      "status": "todo",
+      "status": "done",
       "area": "database",
       "risk": "low",
       "title": "Write graph database decision record",
