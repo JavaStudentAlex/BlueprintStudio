@@ -23,7 +23,7 @@ and follow the repository GSD workflow.
 | ID | Phase | Status | Risk | Title | Scope | Acceptance |
 |----|-------|--------|------|-------|-------|------------|
 | flowdraft-golden-demo-frontend | 8 | done | medium | Add frontend golden demo workflow | `frontend/src/**`, `frontend/tests/**`, `.planning/**` | `Load demo` works without upload/API keys/network; rooms, valuation, and compliance views render deterministic fixture data; frontend tests cover the path. |
-| flowdraft-demo-e2e-smoke | 8 | todo | medium | Add offline golden demo smoke test | `backend/tests/e2e/**`, `frontend/tests/e2e/**`, `scripts/**`, `.planning/**` | Smoke starts from committed fixtures only and proves API/UI demo path without external services. |
+| flowdraft-demo-e2e-smoke | 8 | done | medium | Add offline golden demo smoke test | `backend/tests/e2e/**`, `frontend/tests/e2e/**`, `scripts/**`, `.planning/**` | Smoke starts from committed fixtures only and proves API/UI demo path without external services. |
 | crashpine-upstream-recheck-log | 8 | todo | low | Add CrashPine upstream recheck log | `docs/**`, `.planning/**` | Latest reviewed CrashPine branch/commit SHAs are recorded with merge safety notes. |
 | demo-capability-honesty-disclosure | 8 | todo | low | Add demo capability honesty disclosure | `docs/**`, `.planning/**` | Disclosure separates live, beta, mocked, hardcoded, external-service, and roadmap behavior. |
 | demo-docker-jury-packaging | 8 | todo | medium | Add deterministic demo Docker runbook | `docs/**`, `scripts/**`, `docker-compose.yml`, `.planning/**` | Runbook documents offline demo startup, health checks, fallback build, and no-secret assumptions. |

@@ -34,7 +34,7 @@ should be selected from `.planning/todos/AGENT-TASKS.md`.
 
 Following the GSD task queue, the first safe pending task is:
 
-- `flowdraft-demo-e2e-smoke` - Add offline golden demo smoke test.
+- `crashpine-upstream-recheck-log` - Add CrashPine upstream recheck log.
 
 If the user wants strict GSD phase execution instead of manifest-order task
 selection, run:
