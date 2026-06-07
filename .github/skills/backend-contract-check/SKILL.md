@@ -24,7 +24,7 @@ Ask whether the change affects any of these contracts:
   artifacts, logs, and exports.
 - Safe file path handling for generated reports and downloads.
 - Frontend TypeScript types, API client parsing, and store transitions.
-- Default-test isolation from real LLM, Ollama, Postgres, Jules, GitHub, or
+- Default-test isolation from real LLM, Ollama, Postgres, GitHub, or
   third-party APIs.
 
 ## Verification Pattern

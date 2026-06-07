@@ -51,8 +51,8 @@ For test changes, also apply:
 - Include explicit failure assertions for invalid uploads, missing records,
   closed gates, unavailable exports, malformed SSE data, and service failures.
 - For regressions, add the narrowest test that would have failed before the fix.
-- Never call real LLMs, Ollama, Postgres, GitHub, Jules, or other third-party
-  APIs from default tests.
+- Never call real LLMs, Ollama, Postgres, GitHub, or other third-party APIs
+  from default tests.
 
 ## Repository-Specific Priorities
 

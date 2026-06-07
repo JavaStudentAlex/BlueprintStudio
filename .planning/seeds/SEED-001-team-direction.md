@@ -1,9 +1,10 @@
-# Ideas
+# Seed 001: Team Direction
 
-This file stores raw ideas before they become scoped tasks in
-`agent_tasks.json`.
+**Source:** Legacy raw idea intake transferred during GSD migration.  
+**Captured:** 2026-06-07  
+**Status:** Seeded into GSD planning
 
-## Current Raw Ideas From Team Direction
+## Raw Ideas
 
 - YOLO-based conversion for engineering drawings.
 - Integrate conversion into the current BlueprintStudio project.
@@ -20,10 +21,12 @@ This file stores raw ideas before they become scoped tasks in
 - Expand beyond engineering documents into pipes, electricity, ventilation, and
   other MEP systems.
 
-## Intake Rules
+## Routing
 
-- Keep rough, uncertain, or unprioritized thoughts here.
-- Move accepted work into `backlog.md`.
-- Move implementable work into `agent_tasks.json`.
-- Do not put secrets, customer drawings, private datasets, or unverified
-  scraped content here.
+- Parser ideas map to Phase 2.
+- Standards and GOST ideas map to Phase 3.
+- Real-estate and vector RAG ideas map to Phase 4.
+- Pipes, electricity, ventilation, and broader MEP ideas map to Phase 5.
+- 2D editor ideas map to Phase 6.
+- Pricing and ROI ideas map to Phase 7.
+- FlowDraft demo and packaging ideas map to Phase 8.

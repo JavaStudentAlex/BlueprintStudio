@@ -16,7 +16,20 @@ concurrency:
 jobs:
   next-task:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || github.event.pull_request.user.login == github.repository_owner || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge'))) }}
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event.pull_request.merged == true &&
+          (
+            github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
+            github.event.pull_request.user.login == 'google-jules[bot]' ||
+            github.event.pull_request.user.login == github.repository_owner ||
+            contains(github.event.pull_request.labels.*.name, 'jules') ||
+            contains(github.event.pull_request.labels.*.name, 'automerge')
+          )
+        )
+      }}
 
     steps:
       - uses: actions/checkout@v4
@@ -25,28 +38,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate task manifest
-        run: python scripts/validate_agent_tasks.py agent_tasks.json
+      - name: Validate GSD task queue
+        run: python scripts/gsd_task_bridge.py validate .planning/todos/AGENT-TASKS.md
 
-      - name: Select next safe task
+      - name: Select next safe GSD task
         id: task
-        run: |
-          TASK_JSON=$(jq -cr '[.tasks[] | select(.status == "todo" and (.risk == "low" or .risk == "medium")) | select(has("review_required") | not)][0] // empty' agent_tasks.json)
-
-          if [ -z "$TASK_JSON" ]; then
-            echo "No low/medium todo task without review_required found."
-            exit 1
-          fi
-
-          TASK_ID=$(printf '%s' "$TASK_JSON" | jq -r '.id')
-          echo "Selected task: ${TASK_ID}"
-
-          {
-            echo "task_id=${TASK_ID}"
-            echo "task_json<<EOF"
-            printf '%s\n' "$TASK_JSON"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+        run: python scripts/gsd_task_bridge.py next .planning/todos/AGENT-TASKS.md --github-output "$GITHUB_OUTPUT"
 
       - name: Trigger Google Jules via official API
         env:
@@ -56,6 +53,7 @@ jobs:
           RUN_NUMBER: ${{ github.run_number }}
           TASK_ID: ${{ steps.task.outputs.task_id }}
           SELECTED_TASK: ${{ steps.task.outputs.task_json }}
+          TASK_PROMPT: ${{ steps.task.outputs.task_prompt }}
         run: |
           if [ -z "$JULES_API_KEY" ] && [ -z "$JULES_1_API_KEY" ]; then
             echo "At least one Jules API key secret is required: JULES_API_KEY or JULES_1_API_KEY."
@@ -65,34 +63,41 @@ jobs:
           PROMPT=$(cat <<'EOF'
           You are working on BlueprintStudio, a construction-analysis application with a FastAPI/LangGraph backend and a Next.js frontend.
 
-          MANDATORY ORDER:
+          MANDATORY GSD ORDER:
           1. Read AGENTS.md first. Treat it as the repository contract.
-          2. Validate and inspect agent_tasks.json.
-          3. Read docs/product_direction.md, docs/jules_autonomous_loop.md, docs/flowdraft_integration_research.md, docs/codex_worker_plan.md, backlog.md, and docs/ideas.md only as needed for the selected task.
-          4. Work on exactly one task ID.
-          5. Use the selected task from agent_tasks.json below unless it is already done or genuinely blocked on current main. If blocked, choose the next low/medium-risk todo task without review_required and explain the switch in the PR.
-          6. Stay within the task's allowed_paths. Do not modify .github/workflows/**, secrets, deployment files, or dependency manifests unless the selected task explicitly allows it.
-          7. Implement the task's acceptance criteria. Add or update tests when behavior changes.
-          8. Never call real external LLMs, standards sites, government sites, paid APIs, or third-party services from tests; use mocks, fakes, or fixtures.
-          9. Update agent_tasks.json in the PR: mark the selected task done only when acceptance criteria are met; otherwise leave it todo or mark it blocked with a concise reason.
-          10. Before opening the PR, run the relevant checks:
-             - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
-             - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
-          11. If both backend and frontend are touched, run both check groups.
-          12. Open one pull request against main with the task ID in the title, a concise summary, and the checks you actually ran.
+          2. Read .planning/STATE.md, .planning/PROJECT.md, .planning/REQUIREMENTS.md, .planning/ROADMAP.md, and .planning/todos/AGENT-TASKS.md.
+          3. Inspect relevant source files, tests, and .planning/codebase/ notes.
+          4. Prefer native GSD workflow commands if the environment exposes them. If not, manually follow Discuss -> Plan -> Execute -> Verify -> Ship.
+          5. Work on exactly one GSD task ID.
+          6. Use the selected task from .planning/todos/AGENT-TASKS.md below unless it is already done or genuinely blocked on current main.
+          7. If blocked, choose the next low/medium-risk todo task, explain the switch in the PR, and update .planning/todos/AGENT-TASKS.md.
+          8. Stay within the task scope unless the GSD phase plan explicitly expands it.
+          9. Do not recreate agent_tasks.json or legacy Jules/Codex planning files.
+          10. Do not modify .github/workflows/**, secrets, deployment files, or dependency manifests unless the selected task explicitly allows it.
+          11. Implement the task acceptance criteria. Add or update tests when behavior changes.
+          12. Never call real external LLMs, standards sites, government sites, paid APIs, or third-party services from tests; use mocks, fakes, or fixtures.
+          13. Update .planning/STATE.md, .planning/todos/AGENT-TASKS.md, and verification notes in the PR.
+          14. Before opening the PR, run the relevant checks:
+              - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
+              - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
+          15. If both backend and frontend are touched, run both check groups.
+          16. Open one pull request against main with the task ID in the title, a concise summary, and the checks you actually ran.
           EOF
           )
 
           PROMPT="${PROMPT}
 
-          SELECTED TASK FROM agent_tasks.json:
+          SELECTED TASK FROM .planning/todos/AGENT-TASKS.md:
           ${SELECTED_TASK}
+
+          FOCUSED GSD TASK PROMPT:
+          ${TASK_PROMPT}
           "
 
           PAYLOAD=$(jq -n \
             --arg prompt "$PROMPT" \
             --arg source "sources/github/${REPOSITORY}" \
-            --arg title "BlueprintStudio: ${TASK_ID}" \
+            --arg title "BlueprintStudio GSD: ${TASK_ID}" \
             '{
               "prompt": $prompt,
               "sourceContext": {

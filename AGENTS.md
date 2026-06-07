@@ -12,18 +12,66 @@ are specific to BlueprintStudio.
 
 Before selecting or implementing development work, read these files in order:
 
-1. `agent_tasks.json`
-2. `docs/product_direction.md`
-3. `docs/jules_autonomous_loop.md`
-4. `docs/flowdraft_integration_research.md`
-5. `docs/codex_worker_plan.md`
-6. `backlog.md`
-7. `docs/ideas.md`
+1. `.planning/STATE.md`
+2. `.planning/PROJECT.md`
+3. `.planning/REQUIREMENTS.md`
+4. `.planning/ROADMAP.md`
+5. `.planning/todos/AGENT-TASKS.md`
 
-Use `agent_tasks.json` as the machine-readable source of truth for autonomous
-Jules/Codex work. Markdown backlog and idea files are human-readable planning
-surfaces and should be converted into explicit task entries before
-implementation.
+Use the GSD `.planning/` directory as the primary planning source for
+autonomous agent work. Legacy Jules/Codex task-manifest files have been removed;
+do not recreate `agent_tasks.json`. Jules automation may exist only as a
+GSD-compatible bridge that reads `.planning/` and enforces this workflow.
+
+## Mandatory Jules / GSD Core Workflow
+
+This repository uses GSD Core as the required workflow for non-trivial
+development tasks.
+
+Jules must follow the full GSD lifecycle:
+
+```text
+Discuss -> Plan -> Execute -> Verify -> Ship
+```
+
+Before editing implementation files, Jules must:
+
+1. Read `AGENTS.md`.
+2. Read `.planning/STATE.md`, `.planning/PROJECT.md`,
+   `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and
+   `.planning/todos/AGENT-TASKS.md`.
+3. Inspect relevant source files, tests, and `.planning/codebase/` notes.
+4. Create or update the relevant `.planning/` artifact for the current
+   milestone, phase, slice, or task.
+5. Produce a concrete plan before implementation.
+6. Execute only the selected GSD phase, slice, or task.
+7. Run relevant validation.
+8. Update `.planning/STATE.md`, `.planning/todos/AGENT-TASKS.md`, and any
+   verification notes affected by the work.
+
+Prefer native GSD workflow commands when the agent environment exposes them. If
+native GSD commands are unavailable, Jules must follow the equivalent GSD
+workflow manually and update `.planning/`.
+
+For situational routing, start with:
+
+```text
+$gsd-progress
+```
+
+To continue the current next workflow step:
+
+```text
+$gsd-progress --next
+```
+
+The final PR or final report must include:
+
+- implementation changes
+- tests or validation notes
+- `.planning/` updates
+- commands run
+- known limitations
 
 ## Project Overview
 
@@ -181,13 +229,12 @@ Frontend boundaries:
 
 ## Planning Surfaces
 
-- Machine-readable task queue: `agent_tasks.json`
-- Human-readable backlog: `backlog.md`
-- Product and architecture direction: `docs/product_direction.md`
-- FlowDraft integration research: `docs/flowdraft_integration_research.md`
-- Autonomous Jules loop: `docs/jules_autonomous_loop.md`
-- Codex/Jules worker plan: `docs/codex_worker_plan.md`
-- Raw idea intake: `docs/ideas.md`
+- GSD project context: `.planning/PROJECT.md`
+- GSD requirements and traceability: `.planning/REQUIREMENTS.md`
+- GSD roadmap and phase structure: `.planning/ROADMAP.md`
+- GSD state and next-action guidance: `.planning/STATE.md`
+- GSD task queue: `.planning/todos/AGENT-TASKS.md`
+- Source migration map: `.planning/intel/SOURCE-MIGRATION.md`
 
 ## Mandatory Guardrails
 

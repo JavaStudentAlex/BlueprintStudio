@@ -14,10 +14,69 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  gsd-planning:
+    name: GSD planning validation
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        !github.event.pull_request.draft &&
+        (
+          github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
+          github.event.pull_request.user.login == 'google-jules[bot]' ||
+          github.event.pull_request.user.login == github.repository_owner ||
+          contains(github.event.pull_request.labels.*.name, 'jules') ||
+          contains(github.event.pull_request.labels.*.name, 'automerge')
+        )
+      }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate GSD task queue
+        run: python scripts/gsd_task_bridge.py validate .planning/todos/AGENT-TASKS.md
+
+      - name: Guard against legacy planning surfaces
+        run: |
+          violations=0
+
+          for path in \
+            agent_tasks.json \
+            backlog.md \
+            docs/product_direction.md \
+            docs/flowdraft_integration_research.md \
+            docs/jules_autonomous_loop.md \
+            docs/codex_worker_plan.md \
+            docs/ideas.md \
+            scripts/validate_agent_tasks.py
+          do
+            if [ -e "$path" ]; then
+              echo "::error file=${path}::Legacy planning surface must not be recreated. Use .planning/ instead."
+              violations=1
+            fi
+          done
+
+          exit "$violations"
+
   backend:
     name: Backend validation
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || github.event.pull_request.user.login == github.repository_owner || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge')) }}
+    if: >-
+      ${{
+        !github.event.pull_request.draft &&
+        (
+          github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
+          github.event.pull_request.user.login == 'google-jules[bot]' ||
+          github.event.pull_request.user.login == github.repository_owner ||
+          contains(github.event.pull_request.labels.*.name, 'jules') ||
+          contains(github.event.pull_request.labels.*.name, 'automerge')
+        )
+      }}
     defaults:
       run:
         working-directory: backend
@@ -49,7 +108,17 @@ jobs:
   frontend:
     name: Frontend validation
     runs-on: ubuntu-latest
-    if: ${{ !github.event.pull_request.draft && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || github.event.pull_request.user.login == github.repository_owner || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge')) }}
+    if: >-
+      ${{
+        !github.event.pull_request.draft &&
+        (
+          github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
+          github.event.pull_request.user.login == 'google-jules[bot]' ||
+          github.event.pull_request.user.login == github.repository_owner ||
+          contains(github.event.pull_request.labels.*.name, 'jules') ||
+          contains(github.event.pull_request.labels.*.name, 'automerge')
+        )
+      }}
     defaults:
       run:
         working-directory: frontend
@@ -83,8 +152,18 @@ jobs:
   merge:
     name: Merge validated PR
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
-    if: ${{ !github.event.pull_request.draft && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || github.event.pull_request.user.login == github.repository_owner || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge')) }}
+    needs: [gsd-planning, backend, frontend]
+    if: >-
+      ${{
+        !github.event.pull_request.draft &&
+        (
+          github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
+          github.event.pull_request.user.login == 'google-jules[bot]' ||
+          github.event.pull_request.user.login == github.repository_owner ||
+          contains(github.event.pull_request.labels.*.name, 'jules') ||
+          contains(github.event.pull_request.labels.*.name, 'automerge')
+        )
+      }}
 
     steps:
       - name: Merge PR
