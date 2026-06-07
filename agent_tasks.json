@@ -110,7 +110,7 @@
     },
     {
       "id": "flowdraft-fixture-import",
-      "status": "todo",
+      "status": "done",
       "area": "flowdraft",
       "risk": "low",
       "title": "Import FlowDraft graph fixtures as test data",
