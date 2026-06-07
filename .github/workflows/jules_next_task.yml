@@ -48,15 +48,13 @@ jobs:
       - name: Trigger Google Jules via official API
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
-          JULES_1_API_KEY: ${{ secrets.JULES_1_API_KEY }}
           REPOSITORY: ${{ github.repository }}
-          RUN_NUMBER: ${{ github.run_number }}
           TASK_ID: ${{ steps.task.outputs.task_id }}
           SELECTED_TASK: ${{ steps.task.outputs.task_json }}
           TASK_PROMPT: ${{ steps.task.outputs.task_prompt }}
         run: |
-          if [ -z "$JULES_API_KEY" ] && [ -z "$JULES_1_API_KEY" ]; then
-            echo "At least one Jules API key secret is required: JULES_API_KEY or JULES_1_API_KEY."
+          if [ -z "$JULES_API_KEY" ]; then
+            echo "JULES_API_KEY secret is required for Jules task creation."
             exit 1
           fi
 
@@ -108,38 +106,9 @@ jobs:
               "title": $title
             }')
 
-          trigger_jules() {
-            local key_name="$1"
-            local api_key="$2"
-
-            if [ -z "$api_key" ]; then
-              echo "Skipping ${key_name}; secret is not configured."
-              return 2
-            fi
-
-            echo "Triggering Jules with ${key_name}."
-            curl --fail --silent --show-error 'https://jules.googleapis.com/v1alpha/sessions' \
-              -X POST \
-              -H "Content-Type: application/json" \
-              -H "X-Goog-Api-Key: ${api_key}" \
-              -d "$PAYLOAD"
-          }
-
-          if [ $((RUN_NUMBER % 2)) -eq 0 ]; then
-            PRIMARY_NAME="JULES_API_KEY"
-            PRIMARY_KEY="$JULES_API_KEY"
-            FALLBACK_NAME="JULES_1_API_KEY"
-            FALLBACK_KEY="$JULES_1_API_KEY"
-          else
-            PRIMARY_NAME="JULES_1_API_KEY"
-            PRIMARY_KEY="$JULES_1_API_KEY"
-            FALLBACK_NAME="JULES_API_KEY"
-            FALLBACK_KEY="$JULES_API_KEY"
-          fi
-
-          if trigger_jules "$PRIMARY_NAME" "$PRIMARY_KEY"; then
-            exit 0
-          fi
-
-          echo "Primary Jules key path failed; retrying once with ${FALLBACK_NAME}."
-          trigger_jules "$FALLBACK_NAME" "$FALLBACK_KEY"
+          echo "Triggering Jules with JULES_API_KEY."
+          curl --fail --silent --show-error 'https://jules.googleapis.com/v1alpha/sessions' \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Goog-Api-Key: ${JULES_API_KEY}" \
+            -d "$PAYLOAD"

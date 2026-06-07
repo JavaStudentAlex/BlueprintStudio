@@ -143,6 +143,7 @@ uploaded sources
 | Treat CrashPine tree replacement as an external reference only | The upstream replacement deletes this repo's backend, frontend, tests, and planning surfaces. | Good |
 | Gate compliance through deterministic rules and human review | LLMs can explain and draft, but must not be the compliance source of truth. | Good |
 | Require the repository PR template for agent-created PRs | Agent PR descriptions should preserve the shared What, Why, How tested, and large-PR checklist instead of replacing it with freeform text. | Good |
+| Use one Jules API key secret | Jules task creation should depend only on `JULES_API_KEY`; secondary-key fallback logic is no longer part of the workflow. | Good |
 
 ## Evolution
 

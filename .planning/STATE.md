@@ -1,7 +1,7 @@
 # State: BlueprintStudio
 
 **Initialized:** 2026-06-07  
-**Last updated:** 2026-06-07 after PR template guidance update  
+**Last updated:** 2026-06-07 after Jules API key cleanup  
 **Project reference:** `.planning/PROJECT.md`
 
 ## Current Status
@@ -12,6 +12,10 @@ available as GSD-compatible automation bridges.
 
 Agent PR creation guidance now requires `.github/PULL_REQUEST_TEMPLATE.md` to
 be used as the main pull request description template.
+
+Jules task creation now uses `JULES_API_KEY` as the only supported API key
+secret name; the previous secondary-key fallback has been removed from the
+workflow.
 
 The migration retained the substance of:
 
