@@ -240,7 +240,7 @@
     },
     {
       "id": "flowdraft-golden-demo-fixtures",
-      "status": "todo",
+      "status": "done",
       "area": "flowdraft",
       "risk": "low",
       "title": "Refresh FlowDraft golden demo fixtures",
