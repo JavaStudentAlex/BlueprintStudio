@@ -281,7 +281,7 @@
     },
     {
       "id": "compliance-validation-runner",
-      "status": "todo",
+      "status": "done",
       "area": "compliance",
       "risk": "medium",
       "title": "Implement deterministic compliance validation runner",
