@@ -280,3 +280,126 @@ class ReportExport(BaseModel):
 class ErrorResponse(BaseModel):
     error: str
     detail: str | None = None
+
+
+Discipline = Literal["architecture", "electrical", "plumbing", "hvac", "ventilation", "general"]
+
+
+class GraphProvenance(BaseModel):
+    source_file: str | None = None
+    page_number: int | None = None
+    parser_engine: str | None = None
+    confidence: float | None = None
+
+
+class GraphMeta(BaseModel):
+    diagram_id: str | None = None
+    diagram_type: str | None = None
+    building_id: str | None = None
+    scale: float | None = None
+    title: str | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphSpace(BaseModel):
+    space_id: str
+    discipline: Discipline = "architecture"
+    category: str | None = None
+    polygon: list[list[float]] | None = None
+    area: float | None = None
+    floor: str | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphWall(BaseModel):
+    wall_id: str
+    discipline: Discipline = "architecture"
+    polyline: list[list[float]] | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphFixture(BaseModel):
+    fixture_id: str
+    discipline: Discipline = "architecture"
+    category: str | None = None
+    position: list[float] | None = None
+    space_id: str | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphNode(BaseModel):
+    node_id: str
+    discipline: Discipline = "general"
+    category: str | None = None
+    position: list[float] | None = None
+    space_id: str | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphEdge(BaseModel):
+    edge_id: str
+    discipline: Discipline = "general"
+    category: str | None = None
+    source_id: str
+    target_id: str
+    polyline: list[list[float]] | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class GraphAnnotation(BaseModel):
+    annotation_id: str
+    discipline: Discipline = "general"
+    text: str
+    position: list[float] | None = None
+    properties: dict[str, Any] = Field(default_factory=dict)
+    provenance: GraphProvenance | None = None
+
+    @field_validator("properties", mode="before")
+    @classmethod
+    def _properties_defaults_to_empty_dict(cls, value: Any) -> dict[str, Any]:
+        return _coerce_json_object(value)
+
+
+class EngineeringGraph(BaseModel):
+    meta: GraphMeta = Field(default_factory=GraphMeta)
+    spaces: list[GraphSpace] = Field(default_factory=list)
+    walls: list[GraphWall] = Field(default_factory=list)
+    fixtures: list[GraphFixture] = Field(default_factory=list)
+    nodes: list[GraphNode] = Field(default_factory=list)
+    edges: list[GraphEdge] = Field(default_factory=list)
+    annotations: list[GraphAnnotation] = Field(default_factory=list)

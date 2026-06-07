@@ -87,7 +87,7 @@
     },
     {
       "id": "engineering-graph-schema-v1",
-      "status": "todo",
+      "status": "done",
       "area": "graph",
       "risk": "medium",
       "title": "Define BlueprintStudio engineering graph schema v1",

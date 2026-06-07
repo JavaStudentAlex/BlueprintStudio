@@ -11,6 +11,15 @@ from pydantic import ValidationError
 from app.schemas import (
     ChatChunk,
     ChatRequest,
+    EngineeringGraph,
+    GraphAnnotation,
+    GraphEdge,
+    GraphFixture,
+    GraphMeta,
+    GraphNode,
+    GraphProvenance,
+    GraphSpace,
+    GraphWall,
     HealthStatus,
     IngestResponse,
     Message,
@@ -448,3 +457,115 @@ class TestReportSchemas:
     def test_report_gate_answer_rejects_non_dict_answer(self) -> None:
         with pytest.raises(ValidationError):
             ReportGateAnswerRequest(answer="approved")  # type: ignore[arg-type]
+
+
+def test_engineering_graph_schema() -> None:
+    # Build a simple fixture graph covering required disciplines
+    graph = EngineeringGraph(
+        meta=GraphMeta(
+            diagram_id="diag-1",
+            diagram_type="floor_plan",
+            building_id="bldg-1",
+            scale=100.0,
+            title="Ground Floor",
+            properties={"author": "Test Corp"},
+        ),
+        spaces=[
+            GraphSpace(
+                space_id="space-1",
+                discipline="architecture",
+                category="office",
+                polygon=[[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 10.0]],
+                area=100.0,
+                floor="1",
+                properties={"room_number": "101"},
+                provenance=GraphProvenance(source_file="plan.pdf", page_number=1, confidence=0.9),
+            )
+        ],
+        walls=[
+            GraphWall(
+                wall_id="wall-1",
+                discipline="architecture",
+                polyline=[[0.0, 0.0], [10.0, 0.0]],
+            )
+        ],
+        fixtures=[
+            GraphFixture(
+                fixture_id="fixture-1",
+                discipline="architecture",
+                category="door",
+                position=[5.0, 0.0],
+                space_id="space-1",
+            )
+        ],
+        nodes=[
+            GraphNode(
+                node_id="node-1",
+                discipline="electrical",
+                category="panel",
+                position=[1.0, 1.0],
+                space_id="space-1",
+            ),
+            GraphNode(
+                node_id="node-2",
+                discipline="electrical",
+                category="outlet",
+                position=[9.0, 9.0],
+                space_id="space-1",
+            ),
+            GraphNode(
+                node_id="node-3",
+                discipline="hvac",
+                category="diffuser",
+                position=[5.0, 5.0],
+                space_id="space-1",
+            ),
+            GraphNode(
+                node_id="node-4",
+                discipline="plumbing",
+                category="sink",
+                position=[2.0, 2.0],
+                space_id="space-1",
+            ),
+            GraphNode(
+                node_id="node-5",
+                discipline="ventilation",
+                category="fan",
+                position=[3.0, 3.0],
+                space_id="space-1",
+            ),
+        ],
+        edges=[
+            GraphEdge(
+                edge_id="edge-1",
+                discipline="electrical",
+                category="circuit",
+                source_id="node-1",
+                target_id="node-2",
+                polyline=[[1.0, 1.0], [1.0, 9.0], [9.0, 9.0]],
+            )
+        ],
+        annotations=[
+            GraphAnnotation(
+                annotation_id="ann-1",
+                discipline="general",
+                text="120V Circuit",
+                position=[5.0, 9.0],
+            )
+        ],
+    )
+
+    # Dump and load back to ensure serialization and validation
+    graph_dict = graph.model_dump()
+    loaded_graph = EngineeringGraph.model_validate(graph_dict)
+
+    assert loaded_graph.meta.diagram_id == "diag-1"
+    assert len(loaded_graph.spaces) == 1
+    assert loaded_graph.spaces[0].discipline == "architecture"
+    assert loaded_graph.spaces[0].provenance is not None
+    assert loaded_graph.spaces[0].provenance.confidence == 0.9
+    assert len(loaded_graph.nodes) == 5
+    assert len(loaded_graph.edges) == 1
+    assert loaded_graph.edges[0].discipline == "electrical"
+    assert len(loaded_graph.annotations) == 1
+    assert loaded_graph.meta.properties == {"author": "Test Corp"}
