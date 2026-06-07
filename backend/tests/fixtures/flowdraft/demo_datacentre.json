@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "diagram_type": "FUSED"
+  },
+  "spaces": [
+    {
+      "category": "white_space",
+      "space_id": "space_data_hall"
+    },
+    {
+      "category": "electrical",
+      "space_id": "space_electrical"
+    },
+    {
+      "category": "mechanical",
+      "space_id": "space_plant"
+    }
+  ],
+  "walls": [],
+  "nodes": [
+    {
+      "space_id": "space_plant",
+      "node_id": "node_crac_1"
+    },
+    {
+      "space_id": "space_electrical",
+      "node_id": "node_ups_1"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "edge_chw_loop",
+      "source_id": "node_crac_1",
+      "target_id": "node_ups_1"
+    }
+  ]
+}

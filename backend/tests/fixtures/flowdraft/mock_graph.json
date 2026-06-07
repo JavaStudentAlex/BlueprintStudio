@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "diagram_id": "demo-01",
+    "diagram_type": "PID",
+    "building_id": null
+  },
+  "nodes": [
+    {
+      "node_id": "N1"
+    },
+    {
+      "node_id": "N2"
+    },
+    {
+      "node_id": "N3"
+    },
+    {
+      "node_id": "N4"
+    },
+    {
+      "node_id": "N5"
+    },
+    {
+      "node_id": "N6"
+    },
+    {
+      "node_id": "N7"
+    },
+    {
+      "node_id": "N8"
+    },
+    {
+      "node_id": "N9"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "E1",
+      "source_id": "N1",
+      "target_id": "N2",
+      "properties": {
+        "diameter_mm": 200,
+        "medium": "chilled_water",
+        "flow_lps": 60
+      }
+    },
+    {
+      "edge_id": "E2",
+      "source_id": "N2",
+      "target_id": "N1",
+      "properties": {
+        "diameter_mm": 200,
+        "medium": "chilled_water",
+        "flow_lps": 60
+      }
+    },
+    {
+      "edge_id": "E3",
+      "source_id": "N1",
+      "target_id": "N4",
+      "properties": {
+        "diameter_mm": 250,
+        "medium": "condenser_water",
+        "flow_lps": 80
+      }
+    },
+    {
+      "edge_id": "E4",
+      "source_id": "N2",
+      "target_id": "N5",
+      "properties": {
+        "diameter_mm": 150,
+        "medium": "chilled_water",
+        "flow_lps": 30
+      }
+    },
+    {
+      "edge_id": "E6",
+      "source_id": "N6",
+      "target_id": "N7",
+      "properties": {
+        "ampacity_A": 800,
+        "phase": 3,
+        "medium": "electrical"
+      }
+    },
+    {
+      "edge_id": "E7",
+      "source_id": "N7",
+      "target_id": "N8",
+      "properties": {
+        "ampacity_A": 800,
+        "phase": 3,
+        "medium": "electrical"
+      }
+    },
+    {
+      "edge_id": "E8",
+      "source_id": "N8",
+      "target_id": "N1",
+      "properties": {
+        "ampacity_A": 400,
+        "phase": 3,
+        "medium": "electrical"
+      }
+    },
+    {
+      "edge_id": "E9",
+      "source_id": "N9",
+      "target_id": "N8",
+      "properties": {
+        "medium": "control"
+      }
+    }
+  ]
+}
