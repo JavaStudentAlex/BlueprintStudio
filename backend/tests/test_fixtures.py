@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from app.schemas import EngineeringGraph
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures" / "graphs"
