@@ -261,7 +261,7 @@
     },
     {
       "id": "dc-compliance-rule-model-port",
-      "status": "todo",
+      "status": "done",
       "area": "compliance",
       "risk": "medium",
       "title": "Port dc_compliance_checker rule model",

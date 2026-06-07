@@ -5,6 +5,7 @@ These are the wire format. Treat changes here as breaking.
 
 from __future__ import annotations
 
+from enum import StrEnum
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -430,3 +431,80 @@ class FuseRequest(BaseModel):
 class FuseResponse(BaseModel):
     fused_graph: EngineeringGraph
     warnings: list[str] = Field(default_factory=list)
+
+
+class ComplianceTargetClass(StrEnum):
+    ROOM = "Room"
+    AISLE = "Aisle"
+    RACK = "Rack"
+    EQUIPMENT = "Equipment"
+    BUILDING = "Building"
+    ANY = "Any"
+
+
+class ComplianceCondition(StrEnum):
+    MIN_WIDTH = "min_width"
+    MAX_WIDTH = "max_width"
+    MIN_AREA = "min_area"
+    MIN_CLEARANCE = "min_clearance"
+    MIN_POWER = "min_power"
+    MAX_PUE = "max_pue"
+    MUST_CONNECT_TO = "must_connect_to"
+    MUST_EXIST = "must_exist"
+
+
+class ComplianceRule(BaseModel):
+    model_config = ConfigDict(use_enum_values=True, extra="forbid")
+
+    target_class: ComplianceTargetClass
+    target_type: str | None = None
+    condition: ComplianceCondition
+    value: float | str
+    unit: str | None = None
+    description: str | None = None
+    source: str | None = None
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def _coerce_value(cls, v: Any) -> float | str:
+        if isinstance(v, (int, float)):
+            return float(v)
+        s = str(v).strip()
+        try:
+            return float(s)
+        except ValueError:
+            return s
+
+
+class ComplianceGeometryObject(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    id: str
+    cls: ComplianceTargetClass = Field(alias="class")
+    type: str | None = None
+    geometry: Any = None
+    calculated_metrics: dict[str, float] = Field(default_factory=dict)
+    links: list[str] = Field(default_factory=list)
+
+
+class ComplianceViolation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rule: ComplianceRule
+    target_object: str | None = None
+    actual: float | str | None = None
+    expected: float | str | None = None
+    message: str
+    severity: Literal["info", "warning", "error", "blocker"] = "error"
+    source: str | None = None
+
+
+class ComplianceValidationReport(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    violations: list[ComplianceViolation] = Field(default_factory=list)
+    checks_run: int = 0
+
+    @property
+    def passed(self) -> bool:
+        return len(self.violations) == 0
