@@ -193,7 +193,7 @@
     },
     {
       "id": "flowdraft-fusion-service",
-      "status": "todo",
+      "status": "done",
       "area": "flowdraft",
       "risk": "medium",
       "title": "Port FlowDraft fusion into backend service",
