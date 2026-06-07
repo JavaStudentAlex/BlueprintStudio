@@ -218,7 +218,7 @@
     },
     {
       "id": "parser-adapter-contract",
-      "status": "todo",
+      "status": "done",
       "area": "parsing",
       "risk": "medium",
       "title": "Define parser adapter contract for drawing conversion",
