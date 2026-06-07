@@ -433,6 +433,23 @@ class FuseResponse(BaseModel):
     warnings: list[str] = Field(default_factory=list)
 
 
+class BreakerAnalysisResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    node_id: str
+    tag: str | None = None
+    downstream_load_kW: float  # noqa: N815
+    computed_amps: float
+    ampacity_A: float | None = None  # noqa: N815
+    threshold: float
+    status: Literal["OK", "OVERLOAD", "NO_RATING", "UNKNOWN"]
+    reason: str | None = None
+
+
+class ElectricalLoadAnalysis(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    breakers: list[BreakerAnalysisResult] = Field(default_factory=list)
+
+
 class StandardReviewState(StrEnum):
     PENDING = "pending"
     REVIEWED = "reviewed"

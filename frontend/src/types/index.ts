@@ -292,3 +292,18 @@ export type FuseResponse = {
   fused_graph: EngineeringGraph;
   warnings: string[];
 };
+
+export type BreakerAnalysisResult = {
+  node_id: string;
+  tag: string | null;
+  downstream_load_kW: number;
+  computed_amps: number;
+  ampacity_A: number | null;
+  threshold: number;
+  status: "OK" | "OVERLOAD" | "NO_RATING" | "UNKNOWN";
+  reason: string | null;
+};
+
+export type ElectricalLoadAnalysis = {
+  breakers: BreakerAnalysisResult[];
+};
