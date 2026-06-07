@@ -386,7 +386,7 @@
     },
     {
       "id": "electrical-load-analysis-service",
-      "status": "todo",
+      "status": "done",
       "area": "electrical",
       "risk": "medium",
       "title": "Port deterministic electrical load analysis",
