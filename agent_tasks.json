@@ -282,7 +282,7 @@
     },
     {
       "id": "flowdraft-property-valuation-service",
-      "status": "todo",
+      "status": "done",
       "area": "costing",
       "risk": "medium",
       "title": "Add graph-derived property valuation demo service",
