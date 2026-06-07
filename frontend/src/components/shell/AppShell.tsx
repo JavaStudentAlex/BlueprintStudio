@@ -7,6 +7,10 @@ import { FileTree } from "@/components/files/FileTree";
 import { GraphView } from "@/components/graph/GraphView";
 import { FilePreview } from "@/components/preview/FilePreview";
 import { ReportView } from "@/components/report/ReportView";
+import { RoomsView } from "@/components/demo/RoomsView";
+import { ValuationView } from "@/components/demo/ValuationView";
+import { ComplianceView } from "@/components/demo/ComplianceView";
+
 import { ChatPanel } from "@/components/chat/ChatPanel";
 import { BottomDock } from "@/components/dock/BottomDock";
 import { ProfilePanel } from "@/components/profile/ProfilePanel";
@@ -32,6 +36,12 @@ export function AppShell() {
                 <GraphView />
                 <FilePreview />
               </div>
+            ) : activeView === "rooms" ? (
+              <RoomsView />
+            ) : activeView === "valuation" ? (
+              <ValuationView />
+            ) : activeView === "compliance" ? (
+              <ComplianceView />
             ) : (
               <ReportView />
             )}

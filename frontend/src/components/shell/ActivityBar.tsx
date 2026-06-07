@@ -2,7 +2,15 @@
 
 import { useChatStore } from "@/lib/store";
 
-type IconKey = "project" | "graph" | "report" | "settings" | "guidelines";
+type IconKey =
+  | "project"
+  | "graph"
+  | "report"
+  | "settings"
+  | "guidelines"
+  | "rooms"
+  | "valuation"
+  | "compliance";
 
 const Icon = ({ k }: { k: IconKey }) => {
   switch (k) {
@@ -30,6 +38,25 @@ const Icon = ({ k }: { k: IconKey }) => {
       return (
         <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
           <path d="M5 1h6a1 1 0 011 1v1h1.5A1.5 1.5 0 0115 4.5v9A1.5 1.5 0 0113.5 15h-11A1.5 1.5 0 011 13.5v-9A1.5 1.5 0 012.5 3H4V2a1 1 0 011-1zm0 3h6V2H5v2zm0 2h6v1H5V6zm0 2h6v1H5V8z" />
+        </svg>
+      );
+
+    case "rooms":
+      return (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
+          <path d="M8 1L1 6h2v8h4V9h2v5h4V6h2L8 1z" />
+        </svg>
+      );
+    case "valuation":
+      return (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
+          <path d="M8 2a6 6 0 100 12A6 6 0 008 2zM6 5h4v1H6V5zm-1 3h5v1H5V8zm2 3H6v-1h3v-1H6V8h4V7H6V6h4v1h1v1h-1v1h1v1h-4v1z" />
+        </svg>
+      );
+    case "compliance":
+      return (
+        <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
+          <path d="M14.5 4.5l-8 8L2 8.5l1.5-1.5 3 3 6.5-6.5z" />
         </svg>
       );
     case "guidelines":
@@ -64,6 +91,27 @@ export function ActivityBar() {
     onClick?: () => void;
   }[] = [
     { key: "project", title: "bob-project", active: true },
+    {
+      key: "rooms",
+      title: "bob-rooms",
+      active: activeView === "rooms",
+      pressed: activeView === "rooms",
+      onClick: () => setActiveView("rooms"),
+    },
+    {
+      key: "valuation",
+      title: "bob-valuation",
+      active: activeView === "valuation",
+      pressed: activeView === "valuation",
+      onClick: () => setActiveView("valuation"),
+    },
+    {
+      key: "compliance",
+      title: "bob-compliance",
+      active: activeView === "compliance",
+      pressed: activeView === "compliance",
+      onClick: () => setActiveView("compliance"),
+    },
     {
       key: "graph",
       title: "bob-graph",
