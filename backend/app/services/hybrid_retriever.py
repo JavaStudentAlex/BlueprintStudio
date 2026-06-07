@@ -51,6 +51,7 @@ class HybridRetriever:
         # 2. Fetch graph evidence
         graph_evidence: list[GraphEvidence] = []
         from app.services.graph_artifacts import GraphArtifactRecord
+
         artifacts: list[GraphArtifactRecord] = []
         if document_id:
             artifacts.extend(self._registry.get_by_document_id(document_id))
@@ -154,7 +155,12 @@ class HybridRetriever:
                     if word in str(k).lower() or word in str(v).lower():
                         matched = True
                         break
-            if not matched and hasattr(obj, "category") and obj.category and word in obj.category.lower():
+            if (
+                not matched
+                and hasattr(obj, "category")
+                and obj.category
+                and word in obj.category.lower()
+            ):
                 matched = True
 
             if matched:
