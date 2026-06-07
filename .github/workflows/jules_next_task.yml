@@ -16,7 +16,7 @@ concurrency:
 jobs:
   next-task:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge'))) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (github.event.pull_request.user.login == 'google-labs-jules[bot]' || github.event.pull_request.user.login == 'google-jules[bot]' || github.event.pull_request.user.login == github.repository_owner || contains(github.event.pull_request.labels.*.name, 'jules') || contains(github.event.pull_request.labels.*.name, 'automerge'))) }}
 
     steps:
       - uses: actions/checkout@v4
