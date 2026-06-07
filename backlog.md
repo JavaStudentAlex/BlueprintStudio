@@ -46,6 +46,21 @@ agent with:
       diagrams.
 - [ ] Keep parser engines optional and test with fixtures.
 
+## FlowDraft Golden Demo Refresh
+
+- [ ] Track the latest reviewed FlowDraft commit before implementation work.
+- [ ] Import only sanitized frozen demo JSON fixtures: floor-plan graph,
+      compliance report, and compliance test graph.
+- [ ] Add backend demo endpoints for frozen floor-plan and compliance fixtures.
+- [ ] Add an overlay rendering service that works from graph JSON and uploaded
+      images without writing generated assets to git.
+- [ ] Add graph-derived property valuation with dataset provenance and clear
+      assumptions.
+- [ ] Add a frontend `Load demo` flow with Overlay, Rooms, Valuation, and
+      Compliance views in the existing Next.js shell.
+- [ ] Add an end-to-end demo smoke test that proves the offline demo path works
+      without external API keys.
+
 ## Compliance And Standards
 
 - [ ] Port `dc_compliance_checker` rule and violation models.

@@ -239,6 +239,118 @@
       ]
     },
     {
+      "id": "flowdraft-golden-demo-fixtures",
+      "status": "todo",
+      "area": "flowdraft",
+      "risk": "low",
+      "title": "Refresh FlowDraft golden demo fixtures",
+      "description": "Import small sanitized JSON fixtures from FlowDraft's golden demo refresh, including floor-plan graph, compliance report, and compliance validation graph, while recording the reviewed upstream commit.",
+      "allowed_paths": [
+        "backend/tests/fixtures/**",
+        "frontend/tests/fixtures/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Fixture provenance records FlowDraft commit 27f2b509afe8af0068e8995b96e56deb88f9f6fc",
+        "Fixture set includes floor-plan graph, compliance report, and compliance validation graph",
+        "No binary overlay images, source drawings, model weights, or secrets are committed",
+        "Backend and frontend fixture-loading tests pass"
+      ]
+    },
+    {
+      "id": "flowdraft-demo-api-surfaces",
+      "status": "todo",
+      "area": "flowdraft",
+      "risk": "medium",
+      "title": "Add FlowDraft-style demo and overlay API surfaces",
+      "description": "Expose BlueprintStudio backend endpoints or services equivalent to FlowDraft's latest `/demo/floorplan`, `/demo/compliance-graph`, `/demo/compliance-report`, and `/overlay` behavior using local fixtures and deterministic rendering.",
+      "allowed_paths": [
+        "backend/app/api/**",
+        "backend/app/services/**",
+        "backend/app/schemas.py",
+        "backend/tests/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Demo floor-plan endpoint returns graph fixture metadata and source provenance",
+        "Compliance demo endpoints return deterministic fixture graph and report payloads",
+        "Overlay service renders from an uploaded image plus graph JSON without committing generated overlays",
+        "Backend tests cover success and invalid payload paths"
+      ]
+    },
+    {
+      "id": "flowdraft-property-valuation-service",
+      "status": "todo",
+      "area": "costing",
+      "risk": "medium",
+      "title": "Add graph-derived property valuation demo service",
+      "description": "Adapt FlowDraft's Hong Kong property valuation idea into a BlueprintStudio service that derives area from engineering graphs and returns value, rent, ROI, assumptions, and dataset provenance.",
+      "allowed_paths": [
+        "backend/app/api/**",
+        "backend/app/services/**",
+        "backend/app/schemas.py",
+        "backend/tests/**",
+        "frontend/src/lib/**",
+        "frontend/src/types/**",
+        "frontend/tests/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Service derives total area from graph meta or spaces",
+        "Response includes property value, rent benefit, ROI, assumptions, and source provenance",
+        "Unknown district or missing dataset returns a structured validation error",
+        "Tests use small reviewed fixture data and no live external calls"
+      ]
+    },
+    {
+      "id": "flowdraft-golden-demo-frontend",
+      "status": "todo",
+      "area": "frontend",
+      "risk": "medium",
+      "title": "Add frontend golden demo workflow",
+      "description": "Implement the FlowDraft-inspired offline demo experience inside BlueprintStudio's existing Next.js shell: Load demo, overlay/graph view, rooms table, valuation panel, and compliance findings.",
+      "allowed_paths": [
+        "frontend/src/components/**",
+        "frontend/src/app/**",
+        "frontend/src/lib/**",
+        "frontend/src/types/**",
+        "frontend/tests/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Load demo works without file upload, API keys, or external network calls",
+        "Rooms view renders sorted space names, categories, areas, and confidence",
+        "Valuation view renders graph-derived finance data with assumptions",
+        "Compliance view renders deterministic violations from fixture data",
+        "Frontend tests cover the offline demo path"
+      ]
+    },
+    {
+      "id": "flowdraft-demo-e2e-smoke",
+      "status": "todo",
+      "area": "testing",
+      "risk": "medium",
+      "title": "Add offline golden demo smoke test",
+      "description": "Create an end-to-end smoke path that proves the FlowDraft-inspired demo can load fixture data, render graph/rooms/valuation/compliance states, and avoid live external services.",
+      "allowed_paths": [
+        "backend/tests/e2e/**",
+        "frontend/tests/e2e/**",
+        "scripts/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Smoke test starts from committed fixtures only",
+        "Smoke test verifies demo graph, valuation, and compliance outputs",
+        "Smoke test does not require Anthropic, Roboflow, YOLO weights, Ollama, Postgres, or internet access",
+        "Docs state how to run the demo smoke locally and in CI"
+      ]
+    },
+    {
       "id": "yolo-conversion-spike",
       "status": "todo",
       "area": "parsing",

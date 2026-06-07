@@ -166,6 +166,24 @@ BlueprintStudio should not blindly copy FlowDraft as a separate app. The correct
 direction is to absorb its contracts and stable engines behind existing backend
 services and frontend surfaces.
 
+## Demo Direction
+
+The latest FlowDraft demo update is useful because it packages existing
+engineering pieces into a short, deterministic product story: load a frozen
+floor-plan graph, show labeled rooms and area, estimate property value, run a
+compliance check, and show a roadmap from architecture into P&ID, data-centre,
+and 3D work.
+
+BlueprintStudio should copy that demo behavior, not the static implementation.
+The demo path should:
+
+- run without live API keys, model weights, or third-party calls
+- use sanitized graph and compliance fixtures with provenance
+- avoid committing large overlay/source images unless explicitly approved
+- expose backend demo and overlay surfaces through existing FastAPI modules
+- render the workflow inside the existing Next.js shell
+- be covered by a deterministic backend/frontend smoke test
+
 ## 2D Editor Direction
 
 The 2D editor should be built as an engineering tool, not a decorative canvas.

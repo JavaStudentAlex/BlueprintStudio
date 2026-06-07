@@ -5,29 +5,36 @@
 Repository: `https://github.com/z1nare/flowdraft`
 
 Inspected on 2026-06-07 through GitHub API and raw file access. Rechecked live
-on 2026-06-07 before creating this planning surface. Repository metadata
-reported:
+on 2026-06-07 before creating this planning surface. Rechecked again on
+2026-06-07 after the upstream demo refresh. Repository metadata reported:
 
 - default branch: `main`
 - primary language: Python
 - description: "Placeholder for the project"
 - created: 2026-06-05
-- last pushed: 2026-06-07
+- last pushed: 2026-06-07T04:13:35Z
 - public repository
+- latest reviewed commit: `27f2b509afe8af0068e8995b96e56deb88f9f6fc`
+  (`Golden path hackathon demo: guided UI, config reorg, frozen assets`)
 
 Primary upstream files to recheck before implementation:
 
 - `https://github.com/z1nare/flowdraft`
 - `https://github.com/z1nare/flowdraft/blob/main/README.md`
+- `https://github.com/z1nare/flowdraft/blob/main/docs/REPOSITORY_GUIDE.md`
 - `https://github.com/z1nare/flowdraft/blob/main/ArchDraft_Build_Plan.md`
 - `https://github.com/z1nare/flowdraft/blob/main/FlowDraft_Build_Plan.md`
 - `https://github.com/z1nare/flowdraft/blob/main/schemas/graph.schema.json`
+- `https://github.com/z1nare/flowdraft/blob/main/config/bec_rules.yaml`
+- `https://github.com/z1nare/flowdraft/blob/main/config/class_map.yaml`
 - `https://github.com/z1nare/flowdraft/blob/main/scripts/infer.py`
 - `https://github.com/z1nare/flowdraft/blob/main/src/api.py`
 - `https://github.com/z1nare/flowdraft/blob/main/src/fusion.py`
 - `https://github.com/z1nare/flowdraft/blob/main/src/pue.py`
 - `https://github.com/z1nare/flowdraft/blob/main/src/loads.py`
 - `https://github.com/z1nare/flowdraft/blob/main/src/finance.py`
+- `https://github.com/z1nare/flowdraft/blob/main/data/demo_floorplan.json`
+- `https://github.com/z1nare/flowdraft/blob/main/data/demo_compliance_report.json`
 - `https://github.com/z1nare/flowdraft/blob/main/docs/VIEWER_SPEC.md`
 - `https://github.com/z1nare/flowdraft/blob/main/docs/DEMO_SCENARIOS.md`
 
@@ -45,12 +52,14 @@ The most valuable integration targets for BlueprintStudio are:
 4. Deterministic engineering checks: PUE, BEC, loads, breaker headroom, ROI.
 5. Demo datasets and graph fixtures for tests.
 6. Viewer behavior specification for graph-to-3D and later 2D/3D UI.
+7. The golden demo pattern: offline `Load demo`, room breakdown, valuation,
+   compliance findings, and a precomputed overlay for stage-safe demos.
 
 The least suitable parts to copy directly are:
 
 - static frontend files, because BlueprintStudio already has a Next.js app
 - ad hoc secret lookup from files such as `models/secretapi.txt`
-- large model weights and generated overlays
+- large model weights, source images, and generated overlays
 - hackathon-specific file structure and Windows-oriented run commands
 
 ## Repository Surface
@@ -62,10 +71,16 @@ Key root files:
 - `ArchDraft_Build_Plan.md`: merged architecture plus FlowDraft demo plan.
 - `FlowDraft_Build_Plan.md`: detailed hackathon plan for P&ID/SLD parsing,
   3D, compliance, ROI, and Hong Kong data sources.
+- `docs/REPOSITORY_GUIDE.md`: current file inventory and keep/delete guide
+  after the demo refactor.
 - `schemas/graph.schema.json`: canonical graph schema.
-- `mock_graph.json` and `data/demo_datacentre.json`: useful graph fixtures.
-- `bec_rules.yaml`: small deterministic compliance threshold file.
-- `class_map.yaml`: YOLO/P&ID class mapping to engineering equipment types.
+- `tests/fixtures/mock_graph.json`, `data/demo_datacentre.json`,
+  `data/demo_floorplan.json`, and `data/demo_compliance_report.json`: useful
+  graph and compliance fixtures.
+- `config/bec_rules.yaml`: small deterministic compliance threshold file.
+- `config/class_map.yaml`: YOLO/P&ID class mapping to engineering equipment
+  types.
+- `config/property_prices/`: Hong Kong property price and rent source tables.
 - `scripts/infer.py`: production inference CLI.
 - `src/api.py`: FastAPI endpoints.
 - `src/fusion.py`: graph fusion and routing.
@@ -83,14 +98,54 @@ Key root files:
 - `GET /schema`
 - `GET /demo-graph`
 - `GET /demo-datacentre`
+- `GET /demo/floorplan`
+- `GET /demo/compliance-graph`
+- `GET /demo/compliance-report`
+- `POST /overlay`
+- `POST /compliance/init-demo`
 - `GET /compliance/pue`
+- `POST /compliance/extract`
+- `POST /compliance/rules`
+- `GET /compliance/rules`
+- `POST /compliance/validate`
 - `POST /loads`
 - `POST /whatif`
+- `GET /finance/districts`
+- `POST /finance/property`
 - `POST /finance/roi`
 
 BlueprintStudio already has a FastAPI backend, so these should become backend
 services/routes under the existing `backend/app` structure rather than a second
 standalone API.
+
+## Latest Demo Refresh
+
+Two late upstream commits matter for BlueprintStudio:
+
+- `043f9e2c509c3e85829da4c86fe138db8e427326`: added the TIA-942 compliance
+  checker package, SQLite-backed rule persistence, property valuation API/UI,
+  data-centre parse routing, and an end-to-end API pipeline script.
+- `27f2b509afe8af0068e8995b96e56deb88f9f6fc`: added the golden demo path,
+  reorganized config under `config/`, moved tests under `tests/`, removed the
+  legacy `whole/` snapshot, added frozen floor-plan and compliance JSON, added
+  static demo overlay/source images, and changed the UI around `Load demo`,
+  Overlay, Rooms, Valuation, and Compliance tabs.
+
+Coverage in the current BlueprintStudio plan:
+
+- Already covered or implemented: graph schema, FlowDraft fixtures, graph
+  validation, fusion service, parser adapter contract, compliance rule model,
+  deterministic compliance runner, standards catalog, hybrid retriever,
+  electrical load checks, ROI/cost tasks, and frontend graph/compliance tasks.
+- Partially covered: PUE/BEC checks, property dataset ingestion, valuation, and
+  compliance UI.
+- Newly added to the task queue after this recheck: sanitized golden demo
+  fixtures, demo/overlay backend surfaces, graph-derived property valuation,
+  frontend `Load demo` golden path, and an end-to-end demo smoke test.
+
+Do not copy the upstream static UI wholesale. Translate the behavior into the
+existing Next.js shell and keep the demo path deterministic, local, and usable
+without API keys.
 
 ## Unified Graph Contract
 
@@ -197,8 +252,8 @@ BlueprintStudio should reuse the approach but broaden it:
 ## Finance And Property Data
 
 `src/finance.py` estimates property value and ROI from floor area, district, and
-estate-level price/rent datasets. The repo includes text data under
-`average_property_price/`.
+estate-level price/rent datasets. The latest repo keeps text data under
+`config/property_prices/`.
 
 BlueprintStudio should not hardcode these datasets directly into business
 logic. Instead, create:
@@ -236,7 +291,9 @@ BlueprintStudio should translate this into its existing Next.js shell:
 Do not commit or rely on:
 
 - large YOLO `.pt` weights
-- generated overlay images
+- generated overlay images unless a human explicitly approves a small demo
+  asset import
+- raw source drawings copied from the external repo
 - customer drawings
 - API keys in model files
 - hackathon-only CSDI/Hong Kong assumptions as global product defaults
@@ -245,13 +302,16 @@ Make parser engines optional and test them with fixtures.
 
 ## Recommended Integration Order
 
-1. Define BlueprintStudio graph schema.
-2. Import FlowDraft demo graph as a fixture.
-3. Add backend graph validation.
-4. Port fusion as a typed backend service.
-5. Port deterministic PUE/load logic behind tests.
-6. Port compliance rule model from `dc_compliance_checker`.
-7. Add parser-adapter contracts before importing YOLO/Claude engines.
-8. Add frontend graph inspection and compliance evidence UI.
-9. Add architecture and electrical 2D editor MVPs.
-10. Add property/cost datasets and agent RAG workflows.
+1. Record the exact upstream FlowDraft commit before each integration batch.
+2. Define BlueprintStudio graph schema.
+3. Import sanitized FlowDraft demo graphs as fixtures.
+4. Add backend graph validation.
+5. Port fusion as a typed backend service.
+6. Port deterministic PUE/load logic behind tests.
+7. Port compliance rule model from `dc_compliance_checker`.
+8. Add parser-adapter contracts before importing YOLO/Claude engines.
+9. Add golden demo surfaces: local fixtures, overlay rendering, rooms,
+   valuation, compliance findings, and e2e smoke tests.
+10. Add frontend graph inspection and compliance evidence UI.
+11. Add architecture and electrical 2D editor MVPs.
+12. Add property/cost datasets and agent RAG workflows.
