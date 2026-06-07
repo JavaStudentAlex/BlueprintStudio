@@ -61,6 +61,19 @@ agent with:
 - [ ] Add an end-to-end demo smoke test that proves the offline demo path works
       without external API keys.
 
+## CrashPine Upstream Demo Packaging
+
+- [ ] Recheck `CrashPine/BlueprintStudio` default branch before planning demo
+      packaging work and record compared commit SHAs.
+- [ ] Add a BlueprintStudio-specific honesty/capability disclosure document.
+- [ ] Add Docker/juror runbook support for the offline demo path, including
+      health checks and clear fallback build instructions.
+- [ ] Add a graph-to-3D twin view using the canonical engineering graph.
+- [ ] Add a capability roadmap view that clearly labels live, beta, mocked, and
+      roadmap features.
+- [ ] Do not merge the upstream tree replacement or import its binary assets,
+      source drawings, or YOLO weights.
+
 ## Compliance And Standards
 
 - [ ] Port `dc_compliance_checker` rule and violation models.

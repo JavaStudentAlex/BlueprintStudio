@@ -351,6 +351,112 @@
       ]
     },
     {
+      "id": "crashpine-upstream-recheck-log",
+      "status": "todo",
+      "area": "governance",
+      "risk": "low",
+      "title": "Add CrashPine upstream recheck log",
+      "description": "Create a lightweight recheck note or script that records how CrashPine/BlueprintStudio compares to origin/main, including default branch, commit SHAs, ahead/behind counts, and merge guidance.",
+      "allowed_paths": [
+        "docs/**",
+        "scripts/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Recheck output records upstream master and main commit SHAs",
+        "Recheck output records ahead/behind counts against origin/main",
+        "Docs state that upstream tree-replacement commits are reference-only unless reviewed",
+        "No code is merged from upstream by this task"
+      ]
+    },
+    {
+      "id": "demo-capability-honesty-disclosure",
+      "status": "todo",
+      "area": "governance",
+      "risk": "low",
+      "title": "Add demo capability honesty disclosure",
+      "description": "Create a BlueprintStudio-specific disclosure document inspired by CrashPine's HONESTY.md that distinguishes fully working, partially working, mocked, hardcoded, external-service, pre-existing, and roadmap behavior.",
+      "allowed_paths": [
+        "HONESTY.md",
+        "docs/**",
+        "README.md",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Disclosure lists live offline demo capabilities separately from live parser/API-key capabilities",
+        "Disclosure names mocked or frozen fixtures, hardcoded constants, and static datasets",
+        "Disclosure names external services and optional dependencies",
+        "Disclosure includes verification commands that match this repository"
+      ]
+    },
+    {
+      "id": "demo-docker-jury-packaging",
+      "status": "todo",
+      "area": "devops",
+      "risk": "medium",
+      "title": "Add deterministic demo Docker runbook",
+      "description": "Adapt CrashPine's Docker juror flow into BlueprintStudio without publishing images from CI by default: document pull/build paths, health checks, optional services, and a local demo script for the offline path.",
+      "allowed_paths": [
+        "docker-compose.yml",
+        "backend/Dockerfile",
+        "frontend/Dockerfile",
+        "scripts/**",
+        "README.md",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Runbook explains Docker build and optional prebuilt image pull without requiring secrets",
+        "Demo script or documented smoke verifies health, demo graph, valuation, and compliance endpoints",
+        "Optional external services and API-key behavior are clearly separated",
+        "No Docker image is published automatically by this task"
+      ]
+    },
+    {
+      "id": "graph-3d-twin-frontend",
+      "status": "todo",
+      "area": "frontend",
+      "risk": "medium",
+      "title": "Add graph-to-3D twin frontend view",
+      "description": "Build a BlueprintStudio graph-to-3D twin view inspired by CrashPine's static/twin.html, using the existing Next.js shell and canonical engineering graph instead of copying the static page wholesale.",
+      "allowed_paths": [
+        "frontend/src/app/**",
+        "frontend/src/components/**",
+        "frontend/src/lib/**",
+        "frontend/src/types/**",
+        "frontend/tests/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "View renders spaces as extruded room volumes from fixture graph data",
+        "View renders fixtures and MEP nodes or edges when present",
+        "View has deterministic fallback fixture data and does not depend on external CDNs in tests",
+        "Frontend tests cover nonblank rendering and graph selection state"
+      ]
+    },
+    {
+      "id": "capability-roadmap-frontend",
+      "status": "todo",
+      "area": "frontend",
+      "risk": "low",
+      "title": "Add capability roadmap view",
+      "description": "Create a BlueprintStudio roadmap/capability view inspired by CrashPine's static roadmap page, clearly separating live, beta, mocked, and roadmap features.",
+      "allowed_paths": [
+        "frontend/src/app/**",
+        "frontend/src/components/**",
+        "frontend/tests/**",
+        "docs/**",
+        "agent_tasks.json"
+      ],
+      "acceptance": [
+        "Roadmap view links to live demo, graph, report, and compliance surfaces",
+        "Every capability is labeled live, beta, mocked, or roadmap",
+        "Static what-if calculators are labeled illustrative if not graph-backed",
+        "Frontend tests cover labels and primary navigation"
+      ]
+    },
+    {
       "id": "yolo-conversion-spike",
       "status": "todo",
       "area": "parsing",

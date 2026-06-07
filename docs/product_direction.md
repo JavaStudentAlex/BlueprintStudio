@@ -183,6 +183,16 @@ The demo path should:
 - expose backend demo and overlay surfaces through existing FastAPI modules
 - render the workflow inside the existing Next.js shell
 - be covered by a deterministic backend/frontend smoke test
+- include an honest capability disclosure that separates live, beta, mocked,
+  hardcoded, external-service, and roadmap features
+- eventually provide a juror/operator runbook with Docker health checks and
+  fallback instructions
+
+The CrashPine upstream branch now contains a standalone FlowDraft submission
+with Docker/jury scripts, `HONESTY.md`, `static/twin.html`, and
+`static/roadmap.html`. These are useful product references, but the upstream
+tree replacement should not be merged into BlueprintStudio because it removes
+the current multi-module backend, frontend, agent, report, and test surfaces.
 
 ## 2D Editor Direction
 
@@ -271,6 +281,14 @@ rules, or generated reports without a visible evidence trail and user approval.
 - Add ROI and scenario calculations.
 - Extend report pipeline to generate engineering and compliance reports.
 
+### Phase 8: Demo Packaging And Disclosure
+
+- Add capability honesty/disclosure documentation.
+- Add a deterministic demo runbook and Docker packaging path.
+- Add graph-to-3D twin and capability roadmap views after graph contracts are
+  stable.
+- Add periodic upstream recheck notes for CrashPine and FlowDraft references.
+
 ## Guardrails
 
 - Do not treat the LLM as the source of compliance truth.
@@ -279,6 +297,9 @@ rules, or generated reports without a visible evidence trail and user approval.
 - Do not call real external LLMs, standards sites, government sites, or APIs
   from default tests.
 - Do not add large YOLO weights or customer drawings to git.
+- Do not merge external tree-replacement branches into this repo.
+- Do not publish demo images or Docker images from an agent session without an
+  explicit user request.
 - Do not change GitHub workflow, secret, or auto-merge behavior as part of
   normal feature tasks.
 - Keep every autonomous task narrow, testable, and scoped to explicit paths.

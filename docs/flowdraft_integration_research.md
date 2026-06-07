@@ -147,6 +147,66 @@ Do not copy the upstream static UI wholesale. Translate the behavior into the
 existing Next.js shell and keep the demo path deterministic, local, and usable
 without API keys.
 
+## CrashPine BlueprintStudio Recheck
+
+Repository: `https://github.com/CrashPine/BlueprintStudio`
+
+Rechecked on 2026-06-07 through local git remotes and GitHub metadata.
+Repository metadata reported:
+
+- default branch: `master`
+- latest repository push: 2026-06-07T09:56:16Z
+- upstream `master`: `df48521fa0def8a58c377827c53966acca642e9c`
+- upstream `main`: `a912ae4085c9f03876ac6fd439bfdf12d51f4703`
+
+Comparison against this repo's `origin/main` at recheck time:
+
+- `origin/main...upstream/master`: current repo was 44 commits ahead and
+  CrashPine `master` was 3 commits ahead.
+- `origin/main...upstream/main`: current repo was 44 commits ahead and
+  CrashPine `main` was 3 commits ahead.
+
+The CrashPine-only commits across `master` and `main` were:
+
+- `b550f8f`: replaced the project tree with a standalone FlowDraft hackathon
+  submission.
+- `df48521`: edited `HONESTY.md` on the default `master` branch.
+- `70dc887`: completed `HONESTY.md` with verified working/mocked disclosures
+  on `main`.
+- `a912ae4`: documented Docker Hub pull path for jurors and added
+  `scripts/publish_docker.ps1` on `main`.
+
+Important: `b550f8f` is not safe to merge into this repository. It deletes the
+existing BlueprintStudio backend, frontend, tests, and planning surface, then
+replaces them with a standalone static/FastAPI FlowDraft demo app. Treat it as
+an external implementation reference, not as a branch to merge.
+
+Useful upstream ideas not fully represented before this recheck:
+
+- Root `HONESTY.md` that states what is fully working, partially working,
+  mocked, hardcoded, externally dependent, pre-existing, and known-limited.
+- Juror/demo Docker packaging: prebuilt image path, `docker compose pull`,
+  fallback build, health check, optional profiles, and a scripted demo flow.
+- `static/twin.html`: graph-to-3D building twin that extrudes `spaces[]`,
+  renders fixtures and MEP nodes/edges, reads the latest parsed graph from
+  browser state, and falls back to a demo graph.
+- `static/roadmap.html`: capability map that separates live, beta, and roadmap
+  features, including an illustrative what-if ROI calculator and CSDI/IoT
+  roadmap cards.
+
+Recommended BlueprintStudio response:
+
+- Keep the current Next.js + FastAPI + MemoryPalace application as the product
+  base.
+- Add an honest capability disclosure document tailored to BlueprintStudio.
+- Add demo Docker/runbook tasks only after the offline demo path is stable.
+- Add a graph-to-3D twin as a frontend route or view that consumes the canonical
+  graph contract.
+- Add a capability roadmap page only if it clearly labels live, beta, and
+  roadmap items.
+- Do not import upstream `models/yolov8n_pid.pt`, raw drawings, overlay PNGs,
+  or generated scratch data.
+
 ## Unified Graph Contract
 
 FlowDraft's graph schema supports:
