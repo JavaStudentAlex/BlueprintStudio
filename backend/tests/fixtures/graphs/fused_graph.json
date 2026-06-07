@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "diagram_id": "fused-1",
+    "diagram_type": "fused",
+    "title": "Demo Datacentre Fused",
+    "properties": {}
+  },
+  "spaces": [
+    {
+      "space_id": "room-1",
+      "discipline": "architecture",
+      "category": "data_hall",
+      "polygon": [[0, 0], [10, 0], [10, 10], [0, 10]],
+      "area": 100.0,
+      "properties": {"name": "Data Hall A"},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/arch.pdf"}
+    }
+  ],
+  "walls": [
+    {
+      "wall_id": "wall-1",
+      "discipline": "architecture",
+      "polyline": [[0, 0], [10, 0]],
+      "properties": {"type": "exterior"},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/arch.pdf"}
+    }
+  ],
+  "fixtures": [
+    {
+      "fixture_id": "panel-1",
+      "discipline": "electrical",
+      "category": "panelboard",
+      "position": [5.0, 5.0],
+      "space_id": "room-1",
+      "properties": {"voltage": 400},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/mep.pdf"}
+    }
+  ],
+  "nodes": [
+    {
+      "node_id": "breaker-1",
+      "discipline": "electrical",
+      "category": "breaker",
+      "position": [5.0, 6.0],
+      "space_id": "room-1",
+      "properties": {"rating": 100},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/mep.pdf"}
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "wire-1",
+      "discipline": "electrical",
+      "source_id": "panel-1",
+      "target_id": "breaker-1",
+      "properties": {"length": 1.0},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/mep.pdf"}
+    }
+  ],
+  "annotations": []
+}

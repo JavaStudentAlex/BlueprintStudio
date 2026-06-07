@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "diagram_id": "arch-1",
+    "diagram_type": "floorplan",
+    "title": "Demo Datacentre Architecture",
+    "properties": {}
+  },
+  "spaces": [
+    {
+      "space_id": "room-1",
+      "discipline": "architecture",
+      "category": "data_hall",
+      "polygon": [[0, 0], [10, 0], [10, 10], [0, 10]],
+      "area": 100.0,
+      "properties": {"name": "Data Hall A"},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/arch.pdf"}
+    }
+  ],
+  "walls": [
+    {
+      "wall_id": "wall-1",
+      "discipline": "architecture",
+      "polyline": [[0, 0], [10, 0]],
+      "properties": {"type": "exterior"},
+      "provenance": {"source_file": "https://flowdraft.com/demo/datacentre/arch.pdf"}
+    }
+  ],
+  "fixtures": [],
+  "nodes": [],
+  "edges": [],
+  "annotations": []
+}
