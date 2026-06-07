@@ -1,4 +1,3 @@
-
 from app.schemas import (
     StandardLicenseStatus,
     StandardProvenance,
@@ -10,8 +9,10 @@ from app.schemas import (
 FIXTURE_STANDARDS: dict[str, StandardSourceCatalogEntry] = {
     "gost-r-21-1101-2013": StandardSourceCatalogEntry(
         source_id="gost-r-21-1101-2013",
-        title=("GOST R 21.1101-2013 System of project documents for construction. "
-               "Main requirements for project and working documents"),
+        title=(
+            "GOST R 21.1101-2013 System of project documents for construction. "
+            "Main requirements for project and working documents"
+        ),
         official_url="https://protect.gost.ru/document.aspx?control=7&id=184918",
         jurisdiction="Russian Federation",
         discipline="general",
