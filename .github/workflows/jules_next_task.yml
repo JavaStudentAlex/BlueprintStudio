@@ -81,7 +81,7 @@ jobs:
               - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
               - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
           15. If both backend and frontend are touched, run both check groups.
-          16. Open one pull request against main with the task ID in the title, a concise summary, and the checks you actually ran.
+          16. Open one pull request against main with the task ID in the title. Use .github/PULL_REQUEST_TEMPLATE.md as the main PR description template and fill its sections with the implementation, testing, planning updates, commands run, and known limitations.
           EOF
           )
 

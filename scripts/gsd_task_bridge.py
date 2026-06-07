@@ -186,6 +186,9 @@ Mandatory workflow:
 6. Update .planning/STATE.md, .planning/todos/AGENT-TASKS.md, and verification
    notes affected by the work.
 7. Do not recreate agent_tasks.json or legacy Jules planning files.
+8. When opening a pull request, use .github/PULL_REQUEST_TEMPLATE.md as the main
+   PR description template and fill its sections with the implementation,
+   testing, planning updates, commands run, and limitations.
 """
 
 

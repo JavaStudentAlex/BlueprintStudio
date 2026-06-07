@@ -142,6 +142,7 @@ uploaded sources
 | Absorb FlowDraft contracts, not its standalone app | BlueprintStudio already has a backend/frontend architecture that should remain the product base. | Good |
 | Treat CrashPine tree replacement as an external reference only | The upstream replacement deletes this repo's backend, frontend, tests, and planning surfaces. | Good |
 | Gate compliance through deterministic rules and human review | LLMs can explain and draft, but must not be the compliance source of truth. | Good |
+| Require the repository PR template for agent-created PRs | Agent PR descriptions should preserve the shared What, Why, How tested, and large-PR checklist instead of replacing it with freeform text. | Good |
 
 ## Evolution
 

@@ -1,7 +1,7 @@
 # State: BlueprintStudio
 
 **Initialized:** 2026-06-07  
-**Last updated:** 2026-06-07 after GSD planning migration  
+**Last updated:** 2026-06-07 after PR template guidance update  
 **Project reference:** `.planning/PROJECT.md`
 
 ## Current Status
@@ -9,6 +9,9 @@
 BlueprintStudio now has a GSD `.planning/` structure that replaces the prior
 Jules/Codex planning files. Jules next-task and automerge workflows remain
 available as GSD-compatible automation bridges.
+
+Agent PR creation guidance now requires `.github/PULL_REQUEST_TEMPLATE.md` to
+be used as the main pull request description template.
 
 The migration retained the substance of:
 

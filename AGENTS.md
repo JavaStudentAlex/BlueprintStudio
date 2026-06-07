@@ -65,6 +65,11 @@ To continue the current next workflow step:
 $gsd-progress --next
 ```
 
+When an agent opens a pull request, it must use
+`.github/PULL_REQUEST_TEMPLATE.md` as the main PR description template and fill
+the template sections with task-specific details instead of replacing it with a
+freeform body.
+
 The final PR or final report must include:
 
 - implementation changes

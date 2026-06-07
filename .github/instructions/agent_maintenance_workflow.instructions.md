@@ -22,6 +22,8 @@ Use this when editing `AGENTS.md`, model wrappers, `.github/instructions`,
   `frontend/package.json`, and GitHub Actions.
 - Keep custom agents aligned with the instruction map and current subsystem
   boundaries.
+- Keep PR-opening instructions aligned with `.github/PULL_REQUEST_TEMPLATE.md`;
+  agents must use that file as the main PR description template.
 
 ## Review Checklist
 
@@ -30,6 +32,8 @@ Before finishing an agent-instruction change, verify:
 - Root wrappers point to existing files.
 - Every file referenced in `AGENTS.md` exists.
 - Commands match the repository's actual package managers and CI.
+- PR creation guidance points agents to `.github/PULL_REQUEST_TEMPLATE.md` as
+  the main PR description template.
 - Subsystem descriptions match current directories.
 - Guardrails do not contradict higher-priority runtime or user instructions.
 - The change is docs-only unless the task explicitly asked for behavior changes.
