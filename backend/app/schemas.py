@@ -604,3 +604,19 @@ class ComplianceValidationReport(BaseModel):
     @property
     def passed(self) -> bool:
         return len(self.violations) == 0
+
+
+class PropertyValuationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    graph: EngineeringGraph
+    district: str
+
+
+class PropertyValuationResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    total_area_sqm: float
+    estimated_value_hkd: float
+    estimated_monthly_rent_hkd: float
+    estimated_roi_percentage: float
+    assumptions: list[str] = Field(default_factory=list)
+    dataset_provenance: str

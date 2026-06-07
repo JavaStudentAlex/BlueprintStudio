@@ -339,3 +339,18 @@ export type PUEAnalysisResult = {
   equipment_rules_failed: number;
   equipment_rules: HVACEquipmentRule[];
 };
+
+
+export interface PropertyValuationRequest {
+  graph: EngineeringGraph;
+  district: string;
+}
+
+export interface PropertyValuationResponse {
+  total_area_sqm: number;
+  estimated_value_hkd: number;
+  estimated_monthly_rent_hkd: number;
+  estimated_roi_percentage: number;
+  assumptions: string[];
+  dataset_provenance: string;
+}

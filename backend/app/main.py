@@ -20,7 +20,7 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from app.agent.checkpointer import lifespan_checkpointer
 from app.agent.graph import build_graph
 from app.agent.llm import get_llm
-from app.api import chat, health, ingest, reports, threads
+from app.api import chat, finance, health, ingest, reports, threads
 from app.config import Settings, get_settings
 from app.kb.base import KnowledgeBase
 from app.services.document_analysis import DocumentAnalyzer, build_document_analyzer
@@ -174,6 +174,7 @@ def build_app(*, state: AppState | None = None) -> FastAPI:
     app.include_router(threads.router)
     app.include_router(ingest.router)
     app.include_router(reports.router)
+    app.include_router(finance.router)
 
     return app
 
