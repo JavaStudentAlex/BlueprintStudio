@@ -276,8 +276,8 @@ Plans:
 
 - [x] 08-01: Refresh FlowDraft golden demo fixtures.
 - [x] 08-02: Add FlowDraft-style demo and overlay API surfaces.
-- [ ] 08-03: Add frontend golden demo workflow.
-- [ ] 08-04: Add offline golden demo smoke test.
+- [x] 08-03: Add frontend golden demo workflow.
+- [x] 08-04: Add offline golden demo smoke test.
 - [ ] 08-05: Add CrashPine upstream recheck log.
 - [ ] 08-06: Add demo capability honesty disclosure.
 - [ ] 08-07: Add deterministic demo Docker runbook.
