@@ -344,7 +344,7 @@
     },
     {
       "id": "standards-vector-rag-index",
-      "status": "todo",
+      "status": "done",
       "area": "rag",
       "risk": "medium",
       "title": "Index reviewed standards into vector RAG",
