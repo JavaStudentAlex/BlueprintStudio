@@ -341,6 +341,12 @@ class GraphWall(BaseModel):
 
 
 class GraphFixture(BaseModel):
+    """
+    Represents an endpoint equipment item in the graph.
+    Categories include general fixtures, plus specific MEP concepts
+    like plumbing fixtures (sinks, toilets), meters, and pumps.
+    """
+
     model_config = ConfigDict(extra="forbid")
     fixture_id: str
     discipline: Discipline = "architecture"
@@ -357,6 +363,12 @@ class GraphFixture(BaseModel):
 
 
 class GraphNode(BaseModel):
+    """
+    Represents an internal connection point, junction, or inline component.
+    Categories include general nodes, plus MEP concepts like plumbing valves,
+    drains, and risers.
+    """
+
     model_config = ConfigDict(extra="forbid")
     node_id: str
     discipline: Discipline = "general"
@@ -373,6 +385,12 @@ class GraphNode(BaseModel):
 
 
 class GraphEdge(BaseModel):
+    """
+    Represents a connection between two nodes or fixtures.
+    Categories include general paths, plus MEP connections like
+    plumbing pipes, water supply lines, and drainage/waste systems.
+    """
+
     model_config = ConfigDict(extra="forbid")
     edge_id: str
     discipline: Discipline = "general"
