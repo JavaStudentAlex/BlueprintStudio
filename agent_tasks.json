@@ -545,7 +545,7 @@
     },
     {
       "id": "plumbing-graph-taxonomy",
-      "status": "todo",
+      "status": "done",
       "area": "plumbing",
       "risk": "low",
       "title": "Define plumbing graph taxonomy",

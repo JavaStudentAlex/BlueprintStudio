@@ -233,6 +233,11 @@ export type GraphWall = {
   provenance: GraphProvenance | null;
 };
 
+/**
+ * Represents an endpoint equipment item in the graph.
+ * Categories include general fixtures, plus specific MEP concepts
+ * like plumbing fixtures (sinks, toilets), meters, and pumps.
+ */
 export type GraphFixture = {
   fixture_id: string;
   discipline: Discipline;
@@ -243,6 +248,11 @@ export type GraphFixture = {
   provenance: GraphProvenance | null;
 };
 
+/**
+ * Represents an internal connection point, junction, or inline component.
+ * Categories include general nodes, plus MEP concepts like plumbing valves,
+ * drains, and risers.
+ */
 export type GraphNode = {
   node_id: string;
   discipline: Discipline;
@@ -253,6 +263,11 @@ export type GraphNode = {
   provenance: GraphProvenance | null;
 };
 
+/**
+ * Represents a connection between two nodes or fixtures.
+ * Categories include general paths, plus MEP connections like
+ * plumbing pipes, water supply lines, and drainage/waste systems.
+ */
 export type GraphEdge = {
   edge_id: string;
   discipline: Discipline;
