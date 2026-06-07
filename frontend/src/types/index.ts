@@ -307,3 +307,20 @@ export type BreakerAnalysisResult = {
 export type ElectricalLoadAnalysis = {
   breakers: BreakerAnalysisResult[];
 };
+
+export type HVACEquipmentRule = {
+  equipment_id: string;
+  rule_name: string;
+  expected: string;
+  actual: string;
+  passed: boolean;
+};
+
+export type PUEAnalysisResult = {
+  total_facility_power_kW: number;
+  total_it_power_kW: number;
+  pue: number;
+  equipment_rules_passed: number;
+  equipment_rules_failed: number;
+  equipment_rules: HVACEquipmentRule[];
+};

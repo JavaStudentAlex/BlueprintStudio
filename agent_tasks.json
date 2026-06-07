@@ -409,7 +409,7 @@
     },
     {
       "id": "pue-and-bec-service",
-      "status": "todo",
+      "status": "done",
       "area": "hvac",
       "risk": "medium",
       "title": "Port deterministic PUE and BEC checks",

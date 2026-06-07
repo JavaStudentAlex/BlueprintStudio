@@ -450,6 +450,25 @@ class ElectricalLoadAnalysis(BaseModel):
     breakers: list[BreakerAnalysisResult] = Field(default_factory=list)
 
 
+class HVACEquipmentRule(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    equipment_id: str
+    rule_name: str
+    expected: str
+    actual: str
+    passed: bool
+
+
+class PUEAnalysisResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    total_facility_power_kW: float  # noqa: N815
+    total_it_power_kW: float  # noqa: N815
+    pue: float
+    equipment_rules_passed: int
+    equipment_rules_failed: int
+    equipment_rules: list[HVACEquipmentRule] = Field(default_factory=list)
+
+
 class StandardReviewState(StrEnum):
     PENDING = "pending"
     REVIEWED = "reviewed"

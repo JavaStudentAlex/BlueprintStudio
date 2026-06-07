@@ -22,6 +22,8 @@ from sse_starlette.sse import EventSourceResponse
 from app.kb.base import KnowledgeBase
 from app.schemas import (
     ChatChunk,
+    EngineeringGraph,
+    PUEAnalysisResult,
     ReportArtifact,
     ReportExport,
     ReportGate,
@@ -35,6 +37,7 @@ from app.schemas import (
     ReportValidationFinding,
 )
 from app.services.document_registry import DocumentRegistry
+from app.services.hvac_analysis import analyze_hvac
 from app.services.report_pipeline import ReportPipeline, ReportPipelineRegistry
 from app.services.report_sessions import (
     ReportExportRecord,
@@ -43,6 +46,15 @@ from app.services.report_sessions import (
 )
 
 router = APIRouter(prefix="/api/reports", tags=["reports"])
+
+
+@router.post("/hvac/analyze", response_model=PUEAnalysisResult)
+async def analyze_hvac_graph(
+    graph: EngineeringGraph,
+) -> PUEAnalysisResult:
+    """Analyze a datacentre/HVAC graph to deterministically compute PUE and evaluate rules."""
+    return analyze_hvac(graph)
+
 
 _TERMINAL_SESSION_STATUSES = {"complete", "failed"}
 TModel = TypeVar("TModel")
