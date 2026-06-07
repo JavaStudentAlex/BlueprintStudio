@@ -10,14 +10,19 @@ slurp up files dropped into `backend/data/documents/` at startup.
 from __future__ import annotations
 
 import hashlib
+import io
+import json
 import os
 import uuid
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Request, Response, UploadFile
+from PIL import Image, ImageDraw
+from pydantic import ValidationError
 
-from app.schemas import IngestResponse
+from app.schemas import EngineeringGraph, IngestResponse
 from app.services.engineering_converters import get_engineering_converter
 from app.services.engineering_files import classify
 from app.services.ingestion import (
@@ -137,3 +142,70 @@ def _validated_filename(filename: str | None) -> str:
     if not basename:
         raise HTTPException(status_code=400, detail="uploaded file is missing a filename")
     return basename
+
+
+@router.get("/demo/floorplan")
+async def demo_floorplan():
+    fixture_path = Path("tests/fixtures/flowdraft/demo_floorplan.json")
+    with open(fixture_path) as f:
+        return json.load(f)
+
+
+@router.get("/demo/compliance-graph")
+async def demo_compliance_graph():
+    fixture_path = Path("tests/fixtures/flowdraft/demo_datacentre.json")
+    with open(fixture_path) as f:
+        return json.load(f)
+
+
+@router.get("/demo/compliance-report")
+async def demo_compliance_report():
+    fixture_path = Path("tests/fixtures/flowdraft/demo_compliance_report.json")
+    with open(fixture_path) as f:
+        return json.load(f)
+
+
+@router.post("/overlay")
+async def overlay(image: Annotated[UploadFile, File(...)], graph: Annotated[str, Form(...)]):
+    try:
+        graph_data = json.loads(graph)
+        eng_graph = EngineeringGraph.model_validate(graph_data)
+    except (json.JSONDecodeError, ValidationError) as e:
+        raise HTTPException(status_code=400, detail="Invalid graph payload") from e
+
+    image_bytes = await image.read()
+    try:
+        pil_img = Image.open(io.BytesIO(image_bytes))
+        pil_img.load()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid image payload") from e
+
+    draw = ImageDraw.Draw(pil_img)
+
+    # Draw spaces as polygons
+    for space in eng_graph.spaces:
+        if space.polygon:
+            coords = [(p[0], p[1]) for p in space.polygon]
+            if len(coords) >= 2:
+                draw.polygon(coords, outline="blue", width=3)
+
+    # Draw nodes as circles
+    for node in eng_graph.nodes:
+        if node.position:
+            x, y = node.position[0], node.position[1]
+            draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill="red", outline="red")
+
+    # Draw edges as lines
+    for edge in eng_graph.edges:
+        if edge.polyline:
+            coords = [(p[0], p[1]) for p in edge.polyline]
+            if len(coords) >= 2:
+                draw.line(coords, fill="green", width=3)
+
+    out_bytes = io.BytesIO()
+
+    if pil_img.mode != "RGB":
+        pil_img = pil_img.convert("RGB")  # type: ignore[assignment]
+
+    pil_img.save(out_bytes, format="JPEG")
+    return Response(content=out_bytes.getvalue(), media_type="image/jpeg")
