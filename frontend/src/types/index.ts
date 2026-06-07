@@ -194,3 +194,91 @@ export type Readiness = {
   kb: boolean;
   detail: string | null;
 };
+
+
+export type Discipline = "architecture" | "electrical" | "plumbing" | "hvac" | "ventilation" | "general";
+
+export type GraphProvenance = {
+  source_file: string | null;
+  page_number: number | null;
+  parser_engine: string | null;
+  confidence: number | null;
+};
+
+export type GraphMeta = {
+  diagram_id: string | null;
+  diagram_type: string | null;
+  building_id: string | null;
+  scale: number | null;
+  title: string | null;
+  properties: JsonObject;
+};
+
+export type GraphSpace = {
+  space_id: string;
+  discipline: Discipline;
+  category: string | null;
+  polygon: number[][] | null;
+  area: number | null;
+  floor: string | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type GraphWall = {
+  wall_id: string;
+  discipline: Discipline;
+  polyline: number[][] | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type GraphFixture = {
+  fixture_id: string;
+  discipline: Discipline;
+  category: string | null;
+  position: number[] | null;
+  space_id: string | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type GraphNode = {
+  node_id: string;
+  discipline: Discipline;
+  category: string | null;
+  position: number[] | null;
+  space_id: string | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type GraphEdge = {
+  edge_id: string;
+  discipline: Discipline;
+  category: string | null;
+  source_id: string;
+  target_id: string;
+  polyline: number[][] | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type GraphAnnotation = {
+  annotation_id: string;
+  discipline: Discipline;
+  text: string;
+  position: number[] | null;
+  properties: JsonObject;
+  provenance: GraphProvenance | null;
+};
+
+export type EngineeringGraph = {
+  meta: GraphMeta;
+  spaces: GraphSpace[];
+  walls: GraphWall[];
+  fixtures: GraphFixture[];
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  annotations: GraphAnnotation[];
+};
