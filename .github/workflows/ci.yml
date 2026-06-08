@@ -29,22 +29,73 @@ jobs:
         id: diff
         env:
           BEFORE_SHA: ${{ github.event.before }}
-        run: ./scripts/diff_router.sh
+        run: |
+          set -euo pipefail
+          
+          if [ "${GITHUB_EVENT_NAME:-}" = "pull_request" ]; then
+            BASE_SHA="${GITHUB_BASE_REF:-}"
+            HEAD_SHA="${GITHUB_SHA:-}"
+            git fetch origin "${BASE_SHA}" --depth=1
+          else
+            BASE_SHA="${BEFORE_SHA:-}"
+            HEAD_SHA="${GITHUB_SHA:-}"
+            if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              BASE_SHA="$(git rev-parse "${HEAD_SHA}^" 2>/dev/null || printf '%s' "$HEAD_SHA")"
+            fi
+          fi
+          
+          RUN_BACKEND=false
+          RUN_FRONTEND=false
+          
+          while IFS= read -r path; do
+            if [[ "$path" == .github/workflows/* ]] || [[ "$path" == "docker-compose.yml" ]] || [[ "$path" == "Makefile" ]]; then
+              RUN_BACKEND=true
+              RUN_FRONTEND=true
+              break
+            fi
+            if [[ "$path" == backend/* ]]; then
+              RUN_BACKEND=true
+            fi
+            if [[ "$path" == frontend/* ]]; then
+              RUN_FRONTEND=true
+            fi
+          done < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || git diff --name-only HEAD~1 HEAD)
+          
+          echo "run_backend=$RUN_BACKEND" >> "$GITHUB_OUTPUT"
+          echo "run_frontend=$RUN_FRONTEND" >> "$GITHUB_OUTPUT"
 
   pr-template:
     name: Check PR Template
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
       - name: Validate PR Body
-        env:
-          PR_BODY_FILE: pr_body.txt
         run: |
           cat << 'PR_BODY_EOF' > pr_body.txt
           ${{ github.event.pull_request.body }}
           PR_BODY_EOF
-          python3 scripts/pr_template_check.py
+          
+          python3 -c '
+          import sys, re
+          with open("pr_body.txt", "r") as f:
+              body = f.read()
+          errors = []
+          for section in ["## What", "## Why", "## How tested"]:
+              if section not in body:
+                  errors.append(f"Missing required section: {section}")
+          checkboxes = [
+              r"- \[[xX]\] I have filled in all required sections above",
+              r"- \[[xX]\] The branch name follows the naming convention",
+              r"- \[[xX]\] This PR is not self-merged"
+          ]
+          for i, pattern in enumerate(checkboxes):
+              if not re.search(pattern, body):
+                  errors.append(f"Checkbox {i+1} is not checked or is missing.")
+          if errors:
+              for err in errors: print(f"::error::{err}")
+              sys.exit(1)
+          print("PR template validation passed.")
+          '
 
   backend:
     name: Backend validation
