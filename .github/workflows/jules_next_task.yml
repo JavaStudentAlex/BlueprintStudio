@@ -38,12 +38,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate GSD task queue
-        run: python scripts/gsd_task_bridge.py validate .planning/todos/AGENT-TASKS.md
 
-      - name: Select next safe GSD task
-        id: task
-        run: python scripts/gsd_task_bridge.py next .planning/todos/AGENT-TASKS.md --github-output "$GITHUB_OUTPUT"
 
       - name: Trigger Google Jules via official API
         env:
@@ -63,18 +58,18 @@ jobs:
 
           MANDATORY GSD ORDER:
           1. Read AGENTS.md first. Treat it as the repository contract.
-          2. Read .planning/STATE.md, .planning/PROJECT.md, .planning/REQUIREMENTS.md, .planning/ROADMAP.md, and .planning/todos/AGENT-TASKS.md.
-          3. Inspect relevant source files, tests, and .planning/codebase/ notes.
+          2. Read .gsd/STATE.md, .gsd/PROJECT.md, .gsd/REQUIREMENTS.md, .gsd/ROADMAP.md, and .gsd/QUEUE.md.
+          3. Inspect relevant source files, tests, and .gsd/codebase/ notes.
           4. Prefer native GSD workflow commands if the environment exposes them. If not, manually follow Discuss -> Plan -> Execute -> Verify -> Ship.
           5. Work on exactly one GSD task ID.
-          6. Use the selected task from .planning/todos/AGENT-TASKS.md below unless it is already done or genuinely blocked on current main.
-          7. If blocked, choose the next low/medium-risk todo task, explain the switch in the PR, and update .planning/todos/AGENT-TASKS.md.
+          6. Use the selected task from .gsd/QUEUE.md below unless it is already done or genuinely blocked on current main.
+          7. If blocked, choose the next low/medium-risk todo task, explain the switch in the PR, and update .gsd/QUEUE.md.
           8. Stay within the task scope unless the GSD phase plan explicitly expands it.
           9. Do not recreate agent_tasks.json or legacy Jules/Codex planning files.
           10. Do not modify .github/workflows/**, secrets, deployment files, or dependency manifests unless the selected task explicitly allows it.
           11. Implement the task acceptance criteria. Add or update tests when behavior changes.
           12. Never call real external LLMs, standards sites, government sites, paid APIs, or third-party services from tests; use mocks, fakes, or fixtures.
-          13. Update .planning/STATE.md, .planning/todos/AGENT-TASKS.md, and verification notes in the PR.
+          13. Update .gsd/STATE.md, .gsd/QUEUE.md, and verification notes in the PR.
           14. Before opening the PR, run the relevant checks:
               - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
               - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
@@ -86,7 +81,6 @@ jobs:
 
           PROMPT="${PROMPT}
 
-          SELECTED TASK FROM .planning/todos/AGENT-TASKS.md:
           ${SELECTED_TASK}
 
           FOCUSED GSD TASK PROMPT:

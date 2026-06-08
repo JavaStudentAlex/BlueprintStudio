@@ -38,8 +38,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate GSD task queue
-        run: python scripts/gsd_task_bridge.py validate .planning/todos/AGENT-TASKS.md
 
       - name: Guard against legacy planning surfaces
         run: |
@@ -56,7 +54,7 @@ jobs:
             scripts/validate_agent_tasks.py
           do
             if [ -e "$path" ]; then
-              echo "::error file=${path}::Legacy planning surface must not be recreated. Use .planning/ instead."
+              echo "::error file=${path}::Legacy planning surface must not be recreated. Use .gsd/ instead."
               violations=1
             fi
           done
