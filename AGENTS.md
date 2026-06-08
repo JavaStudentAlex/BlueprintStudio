@@ -49,7 +49,17 @@ Before editing implementation files, Jules must:
 8. Update `.planning/STATE.md`, `.planning/todos/AGENT-TASKS.md`, and any
    verification notes affected by the work.
 
-Prefer native GSD workflow commands when the agent environment exposes them. If
+This environment has the `gsd` CLI installed globally. You MUST use the `gsd` CLI to plan and complete tasks. **Do not manually edit files in the `.planning/` directory.**
+
+Before editing implementation files, you must:
+1. Run `gsd-progress` to see the current state.
+2. Run `gsd-plan-phase <phase>` or `gsd-plan-task` to generate the plan.
+3. Execute the code changes.
+4. Run `gsd-complete-task` to mark the task as finished.
+
+Do not simulate these steps. You must actually execute the `gsd` commands in your shell and wait for the files in `.planning/` to be generated or updated by the tool.
+
+If
 native GSD commands are unavailable, Jules must follow the equivalent GSD
 workflow manually and update `.planning/`.
 
