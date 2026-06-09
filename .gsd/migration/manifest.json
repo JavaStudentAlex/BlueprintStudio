@@ -1,0 +1,77 @@
+{
+  "sourcePath": "/home/jovyan/BlueprintStudio/.planning",
+  "targetRoot": "/home/jovyan/BlueprintStudio",
+  "backupPath": "/home/jovyan/BlueprintStudio/.gsd-backups/migrate-20260608-145711",
+  "startedAt": "2026-06-08T14:57:11.715Z",
+  "completedAt": "2026-06-08T14:57:12.722Z",
+  "preview": {
+    "decisions": {
+      "total": 0
+    },
+    "migrationInputs": {
+      "milestonePhaseDirs": 0,
+      "decisions": 0,
+      "seeds": 1
+    },
+    "milestoneCount": 1,
+    "totalSlices": 9,
+    "totalTasks": 0,
+    "doneSlices": 2,
+    "doneTasks": 0,
+    "sliceCompletionPct": 22,
+    "taskCompletionPct": 0,
+    "requirements": {
+      "active": 31,
+      "validated": 22,
+      "deferred": 0,
+      "outOfScope": 0,
+      "total": 53
+    }
+  },
+  "written": {
+    "roadmaps": 1,
+    "plans": 9,
+    "taskPlans": 0,
+    "taskSummaries": 0,
+    "sliceSummaries": 0,
+    "research": 0,
+    "requirements": 1,
+    "contexts": 1,
+    "other": 3
+  },
+  "imported": {
+    "decisions": 0,
+    "requirements": 53,
+    "artifacts": 12,
+    "hierarchy": {
+      "milestones": 1,
+      "slices": 9,
+      "tasks": 0
+    }
+  },
+  "legacyArchive": {
+    "archived": true,
+    "path": "migration/legacy/planning",
+    "manifestPath": "migration/legacy/manifest.json",
+    "strategy": "full-source-copy"
+  },
+  "verification": {
+    "markdown": {
+      "milestones": 1,
+      "slices": 9,
+      "tasks": 0
+    },
+    "db": {
+      "milestones": 1,
+      "slices": 9,
+      "tasks": 0
+    },
+    "dbReadiness": {
+      "phase": "planning",
+      "registry": 1
+    },
+    "rendered": 2,
+    "skipped": 18,
+    "errors": []
+  }
+}
