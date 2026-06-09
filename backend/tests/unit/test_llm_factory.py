@@ -11,7 +11,7 @@ import pytest
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 
-from app.agent.llm import get_llm
+from app.agent.llm import FakeChatModel, get_llm
 from app.config import Settings
 
 
@@ -35,6 +35,11 @@ class TestLLMFactory:
         llm = get_llm(settings)
         assert isinstance(llm, ChatOllama)
         assert llm.model == "qwen3:1.7b"
+
+    def test_fake_provider_returns_fake_chat_model(self) -> None:
+        settings = Settings(llm_provider="fake")
+        llm = get_llm(settings)
+        assert isinstance(llm, FakeChatModel)
 
     def test_openai_without_key_raises(self) -> None:
         settings = Settings(llm_provider="openai", openai_api_key="")

@@ -163,9 +163,13 @@ jobs:
 
   e2e:
     name: E2E Playwright Tests
-    needs: [backend, frontend]
-    if: success() && (needs.router.outputs.run_frontend == 'true' || github.event_name == 'workflow_dispatch')
+    needs: [router, backend, frontend]
+    if: always() && !failure() && !cancelled() && (needs.router.outputs.run_frontend == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      LLM_PROVIDER: fake
+      KB_BACKEND: fake
     steps:
       - uses: actions/checkout@v4
 
@@ -184,9 +188,11 @@ jobs:
         run: npm run e2e:install
 
       - name: Start docker compose application
+        timeout-minutes: 6
         run: make up
 
       - name: Wait for services
+        timeout-minutes: 3
         run: |
           echo "Waiting for backend on port 8000..."
           timeout 30 bash -c 'while ! curl -s http://localhost:8000/health > /dev/null; do sleep 1; done'
@@ -195,10 +201,14 @@ jobs:
           
       - name: Test frontend (E2E)
         working-directory: frontend
+        timeout-minutes: 6
         run: npm run e2e
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:3000
 
       - name: Teardown
         if: always()
-        run: make logs && make down
+        timeout-minutes: 2
+        run: |
+          make logs-once || true
+          make down
