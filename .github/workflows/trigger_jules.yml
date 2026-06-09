@@ -1,4 +1,4 @@
-name: 2. Trigger Next Jules Task
+name: Trigger Jules
 
 on:
   pull_request:
