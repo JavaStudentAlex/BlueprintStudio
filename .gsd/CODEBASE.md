@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-06-09T04:14:35Z | Files: 270 | Described: 0/270
-<!-- gsd:codebase-meta {"generatedAt":"2026-06-09T04:14:35Z","fingerprint":"e05d01045ace34c31f983e8fa4eb327237a24f64","fileCount":270,"truncated":false} -->
+Generated: 2026-06-09T04:46:43Z | Files: 269 | Described: 0/269
+<!-- gsd:codebase-meta {"generatedAt":"2026-06-09T04:46:43Z","fingerprint":"2f334be8efe5629917c7593ebbba10c6ff7a693f","fileCount":269,"truncated":false} -->
 
 ### (root)/
 - `.env.example`
@@ -54,7 +54,7 @@ Generated: 2026-06-09T04:14:35Z | Files: 270 | Described: 0/270
 
 ### .github/workflows/
 - `.github/workflows/ci.yml`
-- `.github/workflows/trigger_jules.yml`
+- `.github/workflows/jules_next_task.yml`
 
 ### backend/
 - `backend/.dockerignore`
@@ -311,6 +311,5 @@ Generated: 2026-06-09T04:14:35Z | Files: 270 | Described: 0/270
 - `frontend/tests/unit/flows/12-report-full-path.test.tsx`
 
 ### scripts/
-- `scripts/gsd_task_bridge.py`
 - `scripts/smoke_cad_converter.py`
 - `scripts/smoke.sh`
