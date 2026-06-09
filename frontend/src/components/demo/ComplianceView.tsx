@@ -1,6 +1,6 @@
 "use client";
 
-import demoComplianceReport from "../../../tests/fixtures/flowdraft/demo_compliance_report.json";
+import demoComplianceReport from "@/data/flowdraft/demo_compliance_report.json";
 
 export function ComplianceView() {
   const violations = demoComplianceReport.violations || [];
