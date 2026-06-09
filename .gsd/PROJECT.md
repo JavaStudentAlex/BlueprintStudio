@@ -25,8 +25,8 @@ proposes changes.
 - ✓ Legacy task-manifest planning was migrated into the GSD task queue.
 - ✓ Legacy Jules planning files, validator script, and source snapshots were
   removed after migration.
-- ✓ Jules next-task and automerge workflows are retained as GSD-compatible
-  automation bridges that read `.planning/`.
+- ✓ The Jules next-task workflow is retained as a GSD-compatible automation
+  bridge that reads `.gsd/`.
 - ✓ BlueprintStudio engineering graph schema v1 exists.
 - ✓ FlowDraft graph fixtures are imported as deterministic test data.
 - ✓ Backend graph validation service exists.
@@ -96,9 +96,9 @@ BlueprintStudio currently contains:
   graph, preview, onboarding, profile, and settings.
 - Pytest, Vitest/RTL/MSW, Playwright, Ruff, mypy, TypeScript, Next lint, and
   GitHub Actions gates.
-- Existing planning sources migrated into GSD-native project, requirements,
-  roadmap, state, intel, seed, and task documents.
-- A GSD-native task queue at `.planning/todos/AGENT-TASKS.md`.
+- Existing planning sources migrated into GSD-native `.gsd/` project,
+  requirements, queue, state, knowledge, decision, and milestone documents.
+- A GSD-native task queue at `.gsd/QUEUE.md`.
 
 The target architecture is a hybrid analysis stack:
 
@@ -134,9 +134,9 @@ uploaded sources
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Use GSD `.planning/` as the primary planning surface | The user requested migration from Jules-style planning files into gsd-core documentation. | Good |
-| Replace legacy Jules planning surfaces with GSD-compatible automation bridges | The GSD files now carry active planning state, while Jules next-task and automerge functionality must remain available. | Good |
-| Keep tasks in `.planning/todos/AGENT-TASKS.md` | The GSD task queue replaces the removed JSON task manifest and retains active work selection. | Good |
+| Use GSD `.gsd/` as the primary planning surface | The repository now uses the current GSD workspace layout instead of the removed legacy planning tree. | Good |
+| Replace legacy Jules planning surfaces with a GSD-compatible automation bridge | The GSD files now carry active planning state, while Jules next-task functionality must remain available. | Good |
+| Keep tasks in `.gsd/QUEUE.md` | The GSD task queue replaces the removed JSON task manifest and retains active work selection. | Good |
 | Use an explicit engineering graph as authoritative state | Compliance, topology, cost, and editing require typed provenance and deterministic validation. | Good |
 | Keep MemoryPalace optional at test time | Tests need deterministic fakes and should not depend on production-like local services. | Good |
 | Absorb FlowDraft contracts, not its standalone app | BlueprintStudio already has a backend/frontend architecture that should remain the product base. | Good |
@@ -152,9 +152,10 @@ After each GSD phase:
 1. Move validated requirements from Active to Validated.
 2. Move invalidated or intentionally deferred items to Out of Scope with
    rationale.
-3. Update `ROADMAP.md` progress and `STATE.md` current focus.
+3. Update milestone progress, queue state, and current focus through GSD
+   tooling or the relevant hand-written `.gsd/*.md` files.
 4. Add new decisions to this file when they constrain future work.
-5. Keep `.planning/todos/AGENT-TASKS.md` aligned with any task-queue changes.
+5. Keep `.gsd/QUEUE.md` aligned with any task-queue changes.
 
 ---
-*Last updated: 2026-06-07 after migration cleanup from legacy planning files to GSD.*
+*Last updated: 2026-06-09 after aligning active planning references with `.gsd/`.*

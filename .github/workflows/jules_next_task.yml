@@ -30,11 +30,13 @@ jobs:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          set -euo pipefail
+
           if [ -z "${JULES_API_KEY}" ]; then
             echo "JULES_API_KEY secret is not configured. Skipping trigger."
             exit 0
           fi
-          
+
           # We extract the latest project constraints and context to feed into Jules
           GSD_STATE=""
           if [ -d ".gsd" ]; then
@@ -43,14 +45,61 @@ jobs:
              GSD_STATE="No .gsd/ directory found. Please analyze the repository codebase independently to figure out the next logical task or fix."
           fi
 
-          echo "Triggering Google Jules for repository ${REPOSITORY}..."
-          
-          curl -X POST "https://api.jules.app/v1/trigger" \
-            -H "Authorization: Bearer ${JULES_API_KEY}" \
+          OWNER="${REPOSITORY%%/*}"
+          REPO_NAME="${REPOSITORY#*/}"
+
+          echo "Resolving Jules source for repository ${REPOSITORY}..."
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            "https://jules.googleapis.com/v1alpha/sources" \
+            -o /tmp/jules-sources.json
+
+          SOURCE_NAME="$(jq -r \
+            --arg owner "${OWNER}" \
+            --arg repo "${REPO_NAME}" \
+            'first(.sources[]? | select(.githubRepo.owner == $owner and .githubRepo.repo == $repo) | .name) // ""' \
+            /tmp/jules-sources.json)"
+
+          if [ -z "${SOURCE_NAME}" ]; then
+            echo "No Jules source found for ${REPOSITORY}."
+            echo "Install or refresh the Jules GitHub app for this repository, then retry."
+            exit 1
+          fi
+
+          PROMPT="$(cat <<PROMPT
+          Please act as an autonomous agent. Evaluate the repository state to pick up the next task. ${GSD_STATE}
+
+          Follow your internal workflow of planning, implementation, testing, and shipping. Open exactly one Pull Request when done, detailing what was fixed or implemented.
+          PROMPT
+          )"
+
+          SESSION_PAYLOAD="$(jq -n \
+            --arg prompt "${PROMPT}" \
+            --arg source "${SOURCE_NAME}" \
+            '{
+              prompt: $prompt,
+              title: "Next BlueprintStudio task",
+              sourceContext: {
+                source: $source,
+                githubRepoContext: {
+                  startingBranch: "main"
+                }
+              },
+              automationMode: "AUTO_CREATE_PR"
+            }')"
+
+          echo "Triggering Google Jules session for source ${SOURCE_NAME}..."
+          curl --fail-with-body -sS \
+            -X POST "https://jules.googleapis.com/v1alpha/sessions" \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
-            -d @- <<PAYLOAD
-          {
-            "repository": "${REPOSITORY}",
-            "prompt": "Please act as an autonomous agent. Evaluate the repository state to pick up the next task. ${GSD_STATE}\n\nFollow your internal workflow of planning, implementation, testing, and shipping. Open exactly one Pull Request when done, detailing what was fixed or implemented."
-          }
-          PAYLOAD
+            -d "${SESSION_PAYLOAD}" \
+            | tee /tmp/jules-session.json
+
+          SESSION_URL="$(jq -r '.url // empty' /tmp/jules-session.json)"
+          SESSION_NAME="$(jq -r '.name // empty' /tmp/jules-session.json)"
+          if [ -n "${SESSION_URL}" ]; then
+            echo "Jules session: ${SESSION_URL}"
+          elif [ -n "${SESSION_NAME}" ]; then
+            echo "Jules session: ${SESSION_NAME}"
+          fi

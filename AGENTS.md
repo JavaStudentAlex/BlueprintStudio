@@ -12,21 +12,22 @@ are specific to BlueprintStudio.
 
 Before selecting or implementing development work, read these files in order:
 
-1. `.planning/STATE.md`
-2. `.planning/PROJECT.md`
-3. `.planning/REQUIREMENTS.md`
-4. `.planning/ROADMAP.md`
-5. `.planning/todos/AGENT-TASKS.md`
+1. `.gsd/STATE.md`
+2. `.gsd/PROJECT.md`
+3. `.gsd/REQUIREMENTS.md`
+4. `.gsd/DECISIONS.md`
+5. `.gsd/QUEUE.md`
+6. The active milestone context and roadmap under `.gsd/milestones/`
 
-Use the GSD `.planning/` directory as the primary planning source for
-autonomous agent work. Legacy Jules/Codex task-manifest files have been removed;
-do not recreate `agent_tasks.json`. Jules automation may exist only as a
-GSD-compatible bridge that reads `.planning/` and enforces this workflow.
+Use the GSD `.gsd/` directory as the primary planning context for autonomous
+agent work. Legacy Jules/Codex task-manifest files have been removed; do not
+recreate `agent_tasks.json`. Jules automation may exist only as a
+GSD-compatible bridge that reads `.gsd/` and enforces this workflow.
 
-## Mandatory Jules / GSD Core Workflow
+## Mandatory Jules / GSD Workflow
 
-This repository uses GSD Core as the required workflow for non-trivial
-development tasks.
+This repository uses the current GSD `.gsd/` workspace as the required planning
+context for non-trivial development tasks.
 
 Jules must follow the full GSD lifecycle:
 
@@ -37,43 +38,28 @@ Discuss -> Plan -> Execute -> Verify -> Ship
 Before editing implementation files, Jules must:
 
 1. Read `AGENTS.md`.
-2. Read `.planning/STATE.md`, `.planning/PROJECT.md`,
-   `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and
-   `.planning/todos/AGENT-TASKS.md`.
-3. Inspect relevant source files, tests, and `.planning/codebase/` notes.
-4. Create or update the relevant `.planning/` artifact for the current
-   milestone, phase, slice, or task.
-5. Produce a concrete plan before implementation.
-6. Execute only the selected GSD phase, slice, or task.
-7. Run relevant validation.
-8. Update `.planning/STATE.md`, `.planning/todos/AGENT-TASKS.md`, and any
-   verification notes affected by the work.
+2. Read `.gsd/STATE.md`, `.gsd/PROJECT.md`, `.gsd/REQUIREMENTS.md`,
+   `.gsd/DECISIONS.md`, `.gsd/QUEUE.md`, and the active milestone files under
+   `.gsd/milestones/`.
+3. Inspect relevant source files, tests, and `.gsd/CODEBASE.md` when it helps
+   locate existing code.
+4. Produce a concrete plan before implementation.
+5. Execute only the selected GSD milestone, slice, or task.
+6. Run relevant validation.
+7. Update implementation docs or verification notes affected by the work.
 
-This environment has the `gsd` CLI installed globally. You MUST use the `gsd` CLI to plan and complete tasks. **Do not manually edit files in the `.planning/` directory.**
+Use the installed `gsd` CLI only through commands that exist in this repository
+environment. For a noninteractive state check from the repo root, run:
 
-Before editing implementation files, you must:
-1. Run `gsd-progress` to see the current state.
-2. Run `gsd-plan-phase <phase>` or `gsd-plan-task` to generate the plan.
-3. Execute the code changes.
-4. Run `gsd-complete-task` to mark the task as finished.
-
-Do not simulate these steps. You must actually execute the `gsd` commands in your shell and wait for the files in `.planning/` to be generated or updated by the tool.
-
-If
-native GSD commands are unavailable, Jules must follow the equivalent GSD
-workflow manually and update `.planning/`.
-
-For situational routing, start with:
-
-```text
-$gsd-progress
+```bash
+rtk gsd headless query
 ```
 
-To continue the current next workflow step:
-
-```text
-$gsd-progress --next
-```
+Do not use removed GSD v1 wrapper commands. Use the current `gsd headless`
+commands shown by `rtk gsd headless --help`. Do not manually edit generated GSD
+state such as `.gsd/STATE.md` or `.gsd/gsd.db`; use GSD tooling for generated
+state and update hand-written `.gsd/*.md` planning files only when the task
+explicitly concerns planning metadata.
 
 When an agent opens a pull request, it must use
 `.github/PULL_REQUEST_TEMPLATE.md` as the main PR description template and fill
@@ -84,7 +70,7 @@ The final PR or final report must include:
 
 - implementation changes
 - tests or validation notes
-- `.planning/` updates
+- `.gsd/` context or updates, when relevant
 - commands run
 - known limitations
 
@@ -244,12 +230,15 @@ Frontend boundaries:
 
 ## Planning Surfaces
 
-- GSD project context: `.planning/PROJECT.md`
-- GSD requirements and traceability: `.planning/REQUIREMENTS.md`
-- GSD roadmap and phase structure: `.planning/ROADMAP.md`
-- GSD state and next-action guidance: `.planning/STATE.md`
-- GSD task queue: `.planning/todos/AGENT-TASKS.md`
-- Source migration map: `.planning/intel/SOURCE-MIGRATION.md`
+- GSD project context: `.gsd/PROJECT.md`
+- GSD requirements and traceability: `.gsd/REQUIREMENTS.md`
+- GSD decisions register: `.gsd/DECISIONS.md`
+- GSD project knowledge: `.gsd/KNOWLEDGE.md`
+- GSD codebase map: `.gsd/CODEBASE.md`
+- GSD state and next-action guidance: `.gsd/STATE.md`
+- GSD task queue: `.gsd/QUEUE.md`
+- Active milestone context and roadmap: `.gsd/milestones/`
+- Historical migration records: `.gsd/migration/`
 
 ## Mandatory Guardrails
 

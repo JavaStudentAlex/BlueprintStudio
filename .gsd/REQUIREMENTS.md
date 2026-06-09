@@ -301,14 +301,14 @@ Repository-local agent guidance defines task source priority,
 
 The legacy autonomous task manifest was migrated into the GSD
 
-### GOV-03 — GSD `.planning/` is the primary planning entry point for
+### GOV-03 — GSD `.gsd/` is the primary planning entry point for
 
 - Status: validated
 - Class: core-capability
 - Source: inferred
 - Primary Slice: none yet
 
-GSD `.planning/` is the primary planning entry point for
+GSD `.gsd/` is the primary planning entry point for
 
 ### GRAPH-01 — BlueprintStudio has a canonical engineering graph schema v1.
 
