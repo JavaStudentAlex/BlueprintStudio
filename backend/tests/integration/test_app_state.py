@@ -37,6 +37,7 @@ def test_build_app_state_can_include_document_analyzer(client: TestClient) -> No
         checkpointer=client.app.state.app_state.checkpointer,
         registry=client.app.state.app_state.registry,
         report_sessions=client.app.state.app_state.report_sessions,
+        graph_artifacts=client.app.state.app_state.graph_artifacts,
         graph=client.app.state.app_state.graph,
         settings=client.app.state.app_state.settings,
         pipeline_registry=client.app.state.app_state.pipeline_registry,

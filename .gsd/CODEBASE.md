@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-06-09T04:46:43Z | Files: 269 | Described: 0/269
-<!-- gsd:codebase-meta {"generatedAt":"2026-06-09T04:46:43Z","fingerprint":"2f334be8efe5629917c7593ebbba10c6ff7a693f","fileCount":269,"truncated":false} -->
+Generated: 2026-06-09T07:09:34Z | Files: 271 | Described: 0/271
+<!-- gsd:codebase-meta {"generatedAt":"2026-06-09T07:09:34Z","fingerprint":"13ea8f709356343d14f6ed23934f74c532eb42ca","fileCount":271,"truncated":false} -->
 
 ### (root)/
 - `.env.example`
@@ -255,6 +255,10 @@ Generated: 2026-06-09T04:46:43Z | Files: 269 | Described: 0/269
 - `frontend/src/components/shell/ActivityBar.tsx`
 - `frontend/src/components/shell/AppShell.tsx`
 - `frontend/src/components/shell/TopBar.tsx`
+
+### frontend/src/data/flowdraft/
+- `frontend/src/data/flowdraft/demo_compliance_report.json`
+- `frontend/src/data/flowdraft/demo_floorplan.json`
 
 ### frontend/src/lib/
 - `frontend/src/lib/animations.ts`

@@ -70,7 +70,12 @@ backend/uv.lock
 .gsd/browser-baselines/
 .gsd/exec/
 .gsd/last-snapshot.md
-.gsd/notifications.jsonl
+.gsd/gsd.db
+.gsd/metrics.json
+.gsd/state-manifest.json
+.gsd/*.jsonl
+.gsd/audit/*.jsonl
+.gsd/journal/*.jsonl
 .gsd/**/*.log
 .gsd/**/*.sqlite
 .gsd/**/*.sqlite-*
@@ -98,3 +103,17 @@ vendor/
 *.log
 .cache/
 tmp/
+
+# ── GSD baseline (auto-generated) ──
+nul
+nul.*
+con
+con.*
+prn
+prn.*
+aux
+aux.*
+com[1-9]
+com[1-9].*
+lpt[1-9]
+lpt[1-9].*

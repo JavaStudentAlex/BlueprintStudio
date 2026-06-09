@@ -12,11 +12,14 @@ from openpyxl import Workbook
 
 import app.services.converted_drawing_elements as converted_drawing_elements
 from app.kb.fake import FakeKB
+from app.schemas import EngineeringGraph, GraphMeta
 from app.services import ingestion as ingestion_module
 from app.services.document_analysis import OPENAI_ENRICHMENT_FAILED_WARNING
 from app.services.document_elements import DocumentElement
 from app.services.document_registry import lifespan_document_registry
+from app.services.drawing_parsers import DrawingRouting, ParserResult
 from app.services.engineering_converters import ConversionResult
+from app.services.graph_artifacts import lifespan_graph_artifacts
 from app.services.ingestion import (
     DEFAULT_CHUNK_SIZE,
     RegisteredIngestFile,
@@ -42,6 +45,24 @@ def _analysis_metadata(element: DocumentElement, *, status: str) -> dict[str, ob
     if element.confidence is not None:
         metadata["analysis_source_confidence"] = element.confidence
     return metadata
+
+
+class FakeDrawingParser:
+    def __init__(self, should_fail: bool = False):
+        self.should_fail = should_fail
+        self.calls: list[tuple[str, DrawingRouting]] = []
+
+    def parse_drawing(self, file_path: str, *, routing: DrawingRouting = "AUTO") -> ParserResult:
+        self.calls.append((file_path, routing))
+        if self.should_fail:
+            raise RuntimeError("Fake parser failure")
+        return ParserResult(
+            graph=EngineeringGraph(meta=GraphMeta(diagram_type="fake-parsed")),
+            warnings=[],
+            confidence=0.99,
+            parser_name="fake",
+            provenance=None,
+        )
 
 
 def _merge_warnings(*warning_groups: Sequence[str]) -> tuple[str, ...]:
@@ -201,6 +222,183 @@ class TestIngestFiles:
 
 
 class TestIngestRegisteredFiles:
+    async def test_ingest_registered_files_saves_graph_artifact_when_parser_succeeds(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        kb = FakeKB()
+        dwg_path = tmp_path / "test.dwg"
+        dwg_path.write_bytes(b"dwg content")
+
+        converted_path = tmp_path / "test.pdf"
+        converted_path.write_bytes(b"converted content")
+
+        def convert(path: str) -> ConversionResult:
+            return ConversionResult(
+                success=True,
+                status="success",
+                output_path=str(converted_path),
+                warnings=(),
+                error=None,
+                diagnostics={},
+                command_exit_code=0,
+                timeout_seconds=30,
+                source_extension=".dwg",
+            )
+
+        def fake_extract_converted_drawing(
+            path: str,
+            *,
+            source: str,
+            document_id: str | None = None,
+            source_path: str | None = None,
+            conversion: ConversionResult | None = None,
+        ) -> list[DocumentElement]:
+            return [
+                DocumentElement(
+                    document_id=document_id,
+                    source=source,
+                    path=path,
+                    page=1,
+                    element_type="paragraph",
+                    extraction_mode="test",
+                    content="test",
+                    confidence=None,
+                    warnings=(),
+                )
+            ]
+
+        from app.services.engineering_files import classify
+
+        converter = RecordingEngineeringConverter(convert)
+        monkeypatch.setattr(
+            ingestion_module, "extract_converted_drawing", fake_extract_converted_drawing
+        )
+        fake_parser = FakeDrawingParser()
+
+        async with lifespan_document_registry(":memory:") as registry:
+            record, _ = registry.register_or_get(
+                "hash1",
+                original_filename="test.dwg",
+                stored_path=str(dwg_path),
+                content_type="",
+                byte_size=len(b"dwg content"),
+            )
+            entries = [
+                RegisteredIngestFile(
+                    record=record,
+                    is_duplicate=False,
+                    classification=classify("test.dwg"),
+                )
+            ]
+
+            async with lifespan_graph_artifacts(":memory:") as graph_artifacts:
+                result = await ingest_registered_files(
+                    kb,
+                    registry,
+                    entries,
+                    engineering_converter=converter,
+                    graph_artifacts=graph_artifacts,
+                    drawing_parser=fake_parser,
+                )
+
+                assert result.ingested_files == 1
+                assert len(fake_parser.calls) == 1
+                assert fake_parser.calls[0][0] == str(converted_path)
+
+                stored = graph_artifacts.get_by_document_id(record.document_id)
+                assert len(stored) == 1
+                assert stored[0].graph_data.meta.diagram_type == "fake-parsed"
+
+    async def test_ingest_registered_files_continues_if_graph_parsing_fails(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        kb = FakeKB()
+        dwg_path = tmp_path / "test.dwg"
+        dwg_path.write_bytes(b"dwg content")
+
+        converted_path = tmp_path / "test.pdf"
+        converted_path.write_bytes(b"converted content")
+
+        def convert(path: str) -> ConversionResult:
+            return ConversionResult(
+                success=True,
+                status="success",
+                output_path=str(converted_path),
+                warnings=(),
+                error=None,
+                diagnostics={},
+                command_exit_code=0,
+                timeout_seconds=30,
+                source_extension=".dwg",
+            )
+
+        def fake_extract_converted_drawing(
+            path: str,
+            *,
+            source: str,
+            document_id: str | None = None,
+            source_path: str | None = None,
+            conversion: ConversionResult | None = None,
+        ) -> list[DocumentElement]:
+            return [
+                DocumentElement(
+                    document_id=document_id,
+                    source=source,
+                    path=path,
+                    page=1,
+                    element_type="paragraph",
+                    extraction_mode="test",
+                    content="test",
+                    confidence=None,
+                    warnings=(),
+                )
+            ]
+
+        from app.services.engineering_files import classify
+
+        converter = RecordingEngineeringConverter(convert)
+        monkeypatch.setattr(
+            ingestion_module, "extract_converted_drawing", fake_extract_converted_drawing
+        )
+        fake_parser = FakeDrawingParser(should_fail=True)
+
+        async with lifespan_document_registry(":memory:") as registry:
+            record, _ = registry.register_or_get(
+                "hash1",
+                original_filename="test.dwg",
+                stored_path=str(dwg_path),
+                content_type="",
+                byte_size=len(b"dwg content"),
+            )
+            entries = [
+                RegisteredIngestFile(
+                    record=record,
+                    is_duplicate=False,
+                    classification=classify("test.dwg"),
+                )
+            ]
+
+            async with lifespan_graph_artifacts(":memory:") as graph_artifacts:
+                result = await ingest_registered_files(
+                    kb,
+                    registry,
+                    entries,
+                    engineering_converter=converter,
+                    graph_artifacts=graph_artifacts,
+                    drawing_parser=fake_parser,
+                )
+
+                # Even if parsing fails, document chunking succeeds
+                assert result.ingested_files == 1
+                assert len(fake_parser.calls) == 1
+
+                stored = graph_artifacts.get_by_document_id(record.document_id)
+                assert len(stored) == 0
+
     async def test_registered_ingest_persists_indexed_status_and_memory_ids(
         self,
         tmp_path: Path,

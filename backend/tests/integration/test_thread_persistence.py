@@ -34,9 +34,12 @@ async def shared_client_and_state():
         ]
     )
     stack = AsyncExitStack()
+    from app.services.graph_artifacts import lifespan_graph_artifacts
+
     checkpointer = await stack.enter_async_context(lifespan_checkpointer(":memory:"))
     registry = await stack.enter_async_context(lifespan_document_registry(":memory:"))
     report_sessions = await stack.enter_async_context(lifespan_report_sessions(":memory:"))
+    graph_artifacts = await stack.enter_async_context(lifespan_graph_artifacts(":memory:"))
     pipeline_registry = ReportPipelineRegistry()
     graph = build_graph(llm=llm, kb=kb, checkpointer=checkpointer)
     state = build_app_state(
@@ -46,6 +49,7 @@ async def shared_client_and_state():
         registry=registry,
         report_sessions=report_sessions,
         pipeline_registry=pipeline_registry,
+        graph_artifacts=graph_artifacts,
         graph=graph,
     )
     app = build_app(state=state)

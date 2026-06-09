@@ -23,6 +23,7 @@ from app.services.converted_drawing_elements import extract_converted_drawing
 from app.services.document_analysis import DocumentAnalyzer
 from app.services.document_elements import DocumentElement
 from app.services.document_registry import DocumentRecord, DocumentRegistry
+from app.services.drawing_parsers import DrawingParserAdapter
 from app.services.engineering_converters import (
     ConversionResult,
     EngineeringConverter,
@@ -33,6 +34,7 @@ from app.services.engineering_files import (
     ClassificationResult,
     classify,
 )
+from app.services.graph_artifacts import GraphArtifactRegistry
 from app.services.visual_elements import VISUAL_ELEMENT_TYPES
 
 SUPPORTED_EXTENSIONS = tuple(sorted(SUPPORTED_INGEST_EXTENSIONS))
@@ -109,7 +111,18 @@ async def _ingest_converted_drawing_path(
     chunk_size: int,
     chunk_overlap: int,
     document_analyzer: DocumentAnalyzer | None = None,
+    graph_artifacts: GraphArtifactRegistry | None = None,
+    drawing_parser: DrawingParserAdapter | None = None,
 ) -> tuple[int, list[str]]:
+    if drawing_parser is not None and graph_artifacts is not None:
+        try:
+            parser_result = drawing_parser.parse_drawing(path)
+            graph_artifacts.store_artifact(
+                parser_result.graph, document_id=document_id, schema_version="1.0"
+            )
+        except Exception:  # noqa: BLE001, S110
+            pass  # Fall back to base text chunking behavior if parsing fails
+
     elements = extract_converted_drawing(
         path,
         source=source,
@@ -178,6 +191,8 @@ async def ingest_registered_files(
     document_analyzer: DocumentAnalyzer | None = None,
     engineering_converter: EngineeringConverter | None = None,
     engineering_converter_output_dir: str | None = None,
+    graph_artifacts: GraphArtifactRegistry | None = None,
+    drawing_parser: DrawingParserAdapter | None = None,
 ) -> IngestResponse:
     """Ingest registry-backed files and persist lifecycle transitions.
 
@@ -236,6 +251,8 @@ async def ingest_registered_files(
                     chunk_size=chunk_size,
                     chunk_overlap=chunk_overlap,
                     document_analyzer=document_analyzer,
+                    graph_artifacts=graph_artifacts,
+                    drawing_parser=drawing_parser,
                 )
             except Exception as exc:  # noqa: BLE001 - persist failure and continue batch.
                 registry.update_status(record.document_id, "failed", error=str(exc))
@@ -294,6 +311,8 @@ async def ingest_directory(
     document_analyzer: DocumentAnalyzer | None = None,
     engineering_converter: EngineeringConverter | None = None,
     engineering_converter_output_dir: str | None = None,
+    graph_artifacts: GraphArtifactRegistry | None = None,
+    drawing_parser: DrawingParserAdapter | None = None,
 ) -> IngestResponse:
     if not os.path.isdir(directory):
         return IngestResponse(ingested_files=0, ingested_chunks=0)
@@ -339,6 +358,8 @@ async def ingest_directory(
         document_analyzer=document_analyzer,
         engineering_converter=engineering_converter,
         engineering_converter_output_dir=engineering_converter_output_dir,
+        graph_artifacts=graph_artifacts,
+        drawing_parser=drawing_parser,
     )
 
 
