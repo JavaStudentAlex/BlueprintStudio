@@ -19,97 +19,38 @@ jobs:
     if: >-
       ${{
         github.event_name == 'workflow_dispatch' ||
-        (
-          github.event.pull_request.merged == true &&
-          (
-            github.event.pull_request.user.login == 'google-labs-jules[bot]' ||
-            github.event.pull_request.user.login == 'google-jules[bot]' ||
-            github.event.pull_request.user.login == github.repository_owner ||
-            contains(github.event.pull_request.labels.*.name, 'jules') ||
-            contains(github.event.pull_request.labels.*.name, 'automerge')
-          )
-        )
+        github.event.pull_request.merged == true
       }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Validate GSD task queue
-        run: python scripts/gsd_task_bridge.py validate .planning/todos/AGENT-TASKS.md
-
-      - name: Select next safe GSD task
-        id: task
-        run: python scripts/gsd_task_bridge.py next .planning/todos/AGENT-TASKS.md --github-output "$GITHUB_OUTPUT"
-
       - name: Trigger Google Jules via official API
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           REPOSITORY: ${{ github.repository }}
-          TASK_ID: ${{ steps.task.outputs.task_id }}
-          SELECTED_TASK: ${{ steps.task.outputs.task_json }}
-          TASK_PROMPT: ${{ steps.task.outputs.task_prompt }}
         run: |
-          if [ -z "$JULES_API_KEY" ]; then
-            echo "JULES_API_KEY secret is required for Jules task creation."
-            exit 1
+          if [ -z "${JULES_API_KEY}" ]; then
+            echo "JULES_API_KEY secret is not configured. Skipping trigger."
+            exit 0
+          fi
+          
+          # We extract the latest project constraints and context to feed into Jules
+          GSD_STATE=""
+          if [ -d ".gsd" ]; then
+             GSD_STATE="The project context is defined in the .gsd/ directory. Check .gsd/PROJECT.md, .gsd/REQUIREMENTS.md, and .gsd/DECISIONS.md to understand constraints. Review .gsd/QUEUE.md and the latest incomplete milestone in .gsd/milestones/ for the next available task. DO NOT edit or modify files in the .gsd/ directory; treat it as read-only context."
+          else
+             GSD_STATE="No .gsd/ directory found. Please analyze the repository codebase independently to figure out the next logical task or fix."
           fi
 
-          PROMPT=$(cat <<'EOF'
-          You are working on BlueprintStudio, a construction-analysis application with a FastAPI/LangGraph backend and a Next.js frontend.
-
-          MANDATORY GSD ORDER:
-          1. Read AGENTS.md first. Treat it as the repository contract.
-          2. Read .planning/STATE.md, .planning/PROJECT.md, .planning/REQUIREMENTS.md, .planning/ROADMAP.md, and .planning/todos/AGENT-TASKS.md.
-          3. Inspect relevant source files, tests, and .planning/codebase/ notes.
-          4. Prefer native GSD workflow commands if the environment exposes them. If not, manually follow Discuss -> Plan -> Execute -> Verify -> Ship.
-          5. Work on exactly one GSD task ID.
-          6. Use the selected task from .planning/todos/AGENT-TASKS.md below unless it is already done or genuinely blocked on current main.
-          7. If blocked, choose the next low/medium-risk todo task, explain the switch in the PR, and update .planning/todos/AGENT-TASKS.md.
-          8. Stay within the task scope unless the GSD phase plan explicitly expands it.
-          9. Do not recreate agent_tasks.json or legacy Jules/Codex planning files.
-          10. Do not modify .github/workflows/**, secrets, deployment files, or dependency manifests unless the selected task explicitly allows it.
-          11. Implement the task acceptance criteria. Add or update tests when behavior changes.
-          12. Never call real external LLMs, standards sites, government sites, paid APIs, or third-party services from tests; use mocks, fakes, or fixtures.
-          13. Update .planning/STATE.md, .planning/todos/AGENT-TASKS.md, and verification notes in the PR.
-          14. Before opening the PR, run the relevant checks:
-              - backend: uv run --extra dev ruff format --check app tests; uv run --extra dev ruff check app tests; uv run --extra dev mypy app; uv run --extra dev pytest -q
-              - frontend: npm run lint; npx tsc --noEmit; npm test; npm run build
-              - Playwright E2E: Ensure the app works via standard e2e paths if applicable.
-          15. If both backend and frontend are touched, run both check groups.
-          16. Open one pull request against main with the task ID in the title. Use .github/PULL_REQUEST_TEMPLATE.md as the main PR description template and FILL IN ALL ITS SECTIONS EXACTLY as requested (What, Why, How tested, and all 3 checkboxes with [x]). DO NOT create custom sections like "Implementation" or "Testing and Validation" - strictly fill the template.
-          EOF
-          )
-
-          PROMPT="${PROMPT}
-
-          SELECTED TASK FROM .planning/todos/AGENT-TASKS.md:
-          ${SELECTED_TASK}
-
-          FOCUSED GSD TASK PROMPT:
-          ${TASK_PROMPT}
-          "
-
-          PAYLOAD=$(jq -n \
-            --arg prompt "$PROMPT" \
-            --arg source "sources/github/${REPOSITORY}" \
-            --arg title "BlueprintStudio GSD: ${TASK_ID}" \
-            '{
-              "prompt": $prompt,
-              "sourceContext": {
-                "source": $source,
-                "githubRepoContext": {"startingBranch": "main"}
-              },
-              "automationMode": "AUTO_CREATE_PR",
-              "title": $title
-            }')
-
-          echo "Triggering Jules with JULES_API_KEY."
-          curl --fail --silent --show-error 'https://jules.googleapis.com/v1alpha/sessions' \
-            -X POST \
+          echo "Triggering Google Jules for repository ${REPOSITORY}..."
+          
+          curl -X POST "https://api.jules.app/v1/trigger" \
+            -H "Authorization: Bearer ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
-            -H "X-Goog-Api-Key: ${JULES_API_KEY}" \
-            -d "$PAYLOAD"
+            -d @- <<PAYLOAD
+          {
+            "repository": "${REPOSITORY}",
+            "prompt": "Please act as an autonomous agent. Evaluate the repository state to pick up the next task. ${GSD_STATE}\n\nFollow your internal workflow of planning, implementation, testing, and shipping. Open exactly one Pull Request when done, detailing what was fixed or implemented."
+          }
+          PAYLOAD

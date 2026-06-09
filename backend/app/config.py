@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # LLM provider
-    llm_provider: Literal["openai", "ollama"] = "openai"
+    llm_provider: Literal["openai", "ollama", "fake"] = "openai"
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
 

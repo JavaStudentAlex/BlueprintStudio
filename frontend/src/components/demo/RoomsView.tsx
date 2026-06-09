@@ -1,6 +1,6 @@
 "use client";
 
-import demoFloorplan from "../../../tests/fixtures/flowdraft/demo_floorplan.json";
+import demoFloorplan from "@/data/flowdraft/demo_floorplan.json";
 
 export function RoomsView() {
   const spaces = demoFloorplan.spaces || [];

@@ -61,7 +61,22 @@ secrets/
 .claude/skills/*/SKILL.md
 backend/uv.lock
 .mcp.json
-.gsd
+
+# GSD project artifacts are tracked. Keep local/session/runtime artifacts out of Git.
+.gsd/runtime/
+.gsd/activity/
+.gsd/worktrees/
+.gsd/browser-state/
+.gsd/browser-baselines/
+.gsd/exec/
+.gsd/last-snapshot.md
+.gsd/notifications.jsonl
+.gsd/**/*.log
+.gsd/**/*.sqlite
+.gsd/**/*.sqlite-*
+.gsd/**/*.db-wal
+.gsd/**/*.db-shm
+.gsd/**/*.db-journal
 .github/*
 !.github/PULL_REQUEST_TEMPLATE.md
 !.github/workflows/

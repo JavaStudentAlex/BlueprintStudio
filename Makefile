@@ -6,7 +6,7 @@ FRONTEND_URL ?= http://localhost:3000
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down restart rebuild logs ps \
+.PHONY: help up down restart rebuild logs logs-once ps \
         pull-models pg-shell pg-index \
         test test-backend test-frontend smoke smoke-cad e2e \
         backend-shell frontend-shell clean clean-data
@@ -19,6 +19,7 @@ help:
 	@echo "  make restart        Restart all containers"
 	@echo "  make rebuild        Rebuild images and start"
 	@echo "  make logs           Tail logs from all services"
+	@echo "  make logs-once      Print recent logs from all services"
 	@echo "  make ps             Show running services"
 	@echo ""
 	@echo "  make pull-models    Pull required Ollama models (nomic-embed-text + qwen3:1.7b)"
@@ -51,6 +52,9 @@ rebuild:
 
 logs:
 	$(COMPOSE) logs -f --tail=200
+
+logs-once:
+	$(COMPOSE) logs --tail=200
 
 ps:
 	$(COMPOSE) ps

@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "diagram_id": "fp-hybrid-F2_original",
+    "diagram_type": "FLOORPLAN"
+  },
+  "spaces": [
+    {
+      "category": "unknown",
+      "space_id": "space-1"
+    },
+    {
+      "category": "bedroom",
+      "space_id": "space-2"
+    },
+    {
+      "category": "unknown",
+      "space_id": "space-3"
+    },
+    {
+      "category": "unknown",
+      "space_id": "space-4"
+    },
+    {
+      "category": "elevator",
+      "space_id": "space-5"
+    },
+    {
+      "category": "stairwell",
+      "space_id": "space-6"
+    },
+    {
+      "category": "bathroom",
+      "space_id": "space-7"
+    },
+    {
+      "category": "hallway",
+      "space_id": "space-8"
+    },
+    {
+      "category": "unknown",
+      "space_id": "space-9"
+    },
+    {
+      "category": "bathroom",
+      "space_id": "space-10"
+    },
+    {
+      "category": "kitchen",
+      "space_id": "space-11"
+    },
+    {
+      "category": "corridor",
+      "space_id": "space-12"
+    },
+    {
+      "category": "toilet",
+      "space_id": "space-13"
+    },
+    {
+      "category": "stairwell",
+      "space_id": "space-14"
+    },
+    {
+      "category": "stairwell",
+      "space_id": "space-15"
+    },
+    {
+      "category": "unknown",
+      "space_id": "space-16"
+    },
+    {
+      "category": "unknown",
+      "space_id": "space-17"
+    },
+    {
+      "category": "bathroom",
+      "space_id": "space-18"
+    },
+    {
+      "category": "utility",
+      "space_id": "space-19"
+    },
+    {
+      "category": "bathroom",
+      "space_id": "space-20"
+    }
+  ],
+  "walls": [],
+  "fixtures": [
+    {
+      "category": "door",
+      "space_id": "space-8",
+      "fixture_id": "fixture-21"
+    },
+    {
+      "category": "door",
+      "space_id": "space-4",
+      "fixture_id": "fixture-22"
+    },
+    {
+      "category": "door",
+      "space_id": "space-4",
+      "fixture_id": "fixture-23"
+    },
+    {
+      "category": "door",
+      "space_id": "space-4",
+      "fixture_id": "fixture-24"
+    },
+    {
+      "category": "door",
+      "space_id": "space-5",
+      "fixture_id": "fixture-25"
+    },
+    {
+      "category": "door",
+      "space_id": "space-11",
+      "fixture_id": "fixture-26"
+    },
+    {
+      "category": "door",
+      "space_id": "space-8",
+      "fixture_id": "fixture-27"
+    },
+    {
+      "category": "window",
+      "space_id": "space-6",
+      "fixture_id": "fixture-28"
+    },
+    {
+      "category": "door",
+      "space_id": "space-2",
+      "fixture_id": "fixture-29"
+    },
+    {
+      "category": "window",
+      "space_id": "space-6",
+      "fixture_id": "fixture-30"
+    },
+    {
+      "category": "door",
+      "space_id": "space-8",
+      "fixture_id": "fixture-31"
+    },
+    {
+      "category": "door",
+      "space_id": "space-8",
+      "fixture_id": "fixture-32"
+    },
+    {
+      "category": "door",
+      "space_id": "space-13",
+      "fixture_id": "fixture-33"
+    },
+    {
+      "category": "window",
+      "space_id": "space-6",
+      "fixture_id": "fixture-34"
+    },
+    {
+      "category": "window",
+      "space_id": "space-18",
+      "fixture_id": "fixture-35"
+    },
+    {
+      "category": "window",
+      "space_id": "space-6",
+      "fixture_id": "fixture-36"
+    },
+    {
+      "category": "door",
+      "space_id": "space-18",
+      "fixture_id": "fixture-37"
+    },
+    {
+      "category": "door",
+      "space_id": "space-18",
+      "fixture_id": "fixture-38"
+    },
+    {
+      "category": "window",
+      "space_id": "space-6",
+      "fixture_id": "fixture-39"
+    },
+    {
+      "category": "window",
+      "space_id": "space-18",
+      "fixture_id": "fixture-40"
+    },
+    {
+      "category": "door",
+      "space_id": "space-20",
+      "fixture_id": "fixture-41"
+    },
+    {
+      "category": "window",
+      "space_id": "space-20",
+      "fixture_id": "fixture-42"
+    },
+    {
+      "category": "door",
+      "space_id": "space-20",
+      "fixture_id": "fixture-43"
+    }
+  ],
+  "nodes": [],
+  "edges": []
+}
