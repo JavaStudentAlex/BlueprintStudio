@@ -25,7 +25,9 @@ from app.config import Settings, get_settings
 from app.kb.base import KnowledgeBase
 from app.services.document_analysis import DocumentAnalyzer, build_document_analyzer
 from app.services.document_registry import DocumentRegistry, lifespan_document_registry
+from app.services.drawing_parsers import DrawingParserAdapter
 from app.services.engineering_converters import EngineeringConverter, get_engineering_converter
+from app.services.graph_artifacts import GraphArtifactRegistry, lifespan_graph_artifacts
 from app.services.report_pipeline import ReportPipelineRegistry
 from app.services.report_sessions import ReportSessionStore, lifespan_report_sessions
 
@@ -39,11 +41,13 @@ class AppState:
     registry: DocumentRegistry
     report_sessions: ReportSessionStore
     pipeline_registry: ReportPipelineRegistry
+    graph_artifacts: GraphArtifactRegistry
     report_exports_dir: str
     graph: Any  # CompiledStateGraph; not exposed in stable types
     document_analyzer: DocumentAnalyzer | None = None
     engineering_converter: EngineeringConverter | None = None
     engineering_converter_output_dir: str = ""
+    drawing_parser: DrawingParserAdapter | None = None
 
 
 def build_app_state(
@@ -54,12 +58,14 @@ def build_app_state(
     registry: DocumentRegistry,
     report_sessions: ReportSessionStore,
     pipeline_registry: ReportPipelineRegistry,
+    graph_artifacts: GraphArtifactRegistry,
     graph: Any,
     settings: Settings | None = None,
     document_analyzer: DocumentAnalyzer | None = None,
     engineering_converter: EngineeringConverter | None = None,
     engineering_converter_output_dir: str | None = None,
     report_exports_dir: str | None = None,
+    drawing_parser: DrawingParserAdapter | None = None,
 ) -> AppState:
     active_settings = settings or get_settings()
     active_engineering_converter = engineering_converter or get_engineering_converter(
@@ -78,6 +84,7 @@ def build_app_state(
         registry=registry,
         report_sessions=report_sessions,
         pipeline_registry=pipeline_registry,
+        graph_artifacts=graph_artifacts,
         report_exports_dir=(
             report_exports_dir
             if report_exports_dir is not None
@@ -87,6 +94,7 @@ def build_app_state(
         document_analyzer=document_analyzer,
         engineering_converter=active_engineering_converter,
         engineering_converter_output_dir=active_engineering_converter_output_dir,
+        drawing_parser=drawing_parser,
     )
 
 
@@ -118,24 +126,28 @@ async def _production_lifespan(app: FastAPI) -> AsyncIterator[None]:
             async with lifespan_report_sessions(
                 settings.report_sessions_db_path
             ) as report_sessions:
-                pipeline_registry = ReportPipelineRegistry()
-                graph = build_graph(llm=llm, kb=kb, checkpointer=checkpointer)
-                engineering_converter = get_engineering_converter(settings)
-                app.state.app_state = build_app_state(
-                    llm=llm,
-                    kb=kb,
-                    checkpointer=checkpointer,
-                    registry=registry,
-                    report_sessions=report_sessions,
-                    pipeline_registry=pipeline_registry,
-                    graph=graph,
-                    settings=settings,
-                    document_analyzer=document_analyzer,
-                    engineering_converter=engineering_converter,
-                    engineering_converter_output_dir=settings.engineering_converter_output_dir,
-                    report_exports_dir=settings.report_exports_dir,
-                )
-                yield
+                async with lifespan_graph_artifacts(
+                    settings.graph_artifacts_db_path
+                ) as graph_artifacts:
+                    pipeline_registry = ReportPipelineRegistry()
+                    graph = build_graph(llm=llm, kb=kb, checkpointer=checkpointer)
+                    engineering_converter = get_engineering_converter(settings)
+                    app.state.app_state = build_app_state(
+                        llm=llm,
+                        kb=kb,
+                        checkpointer=checkpointer,
+                        registry=registry,
+                        report_sessions=report_sessions,
+                        pipeline_registry=pipeline_registry,
+                        graph_artifacts=graph_artifacts,
+                        graph=graph,
+                        settings=settings,
+                        document_analyzer=document_analyzer,
+                        engineering_converter=engineering_converter,
+                        engineering_converter_output_dir=settings.engineering_converter_output_dir,
+                        report_exports_dir=settings.report_exports_dir,
+                    )
+                    yield
 
 
 def build_app(*, state: AppState | None = None) -> FastAPI:

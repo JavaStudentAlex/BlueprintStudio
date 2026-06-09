@@ -103,6 +103,8 @@ async def ingest(
         document_analyzer=state.document_analyzer,
         engineering_converter=engineering_converter,
         engineering_converter_output_dir=state.engineering_converter_output_dir,
+        graph_artifacts=state.graph_artifacts,
+        drawing_parser=state.drawing_parser,
     )
 
 
